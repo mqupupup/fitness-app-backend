@@ -1,0 +1,43 @@
+### 健康检查
+GET http://localhost:3000/
+
+### 获取力量标准数据
+GET http://localhost:3000/api/fitness/standards?exercise=bench_press&gender=male
+
+### 注册/登录用户
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "phone": "13800138000",
+  "password": "password123",
+  "gender": "male",
+  "age": 25,
+  "height": 175,
+  "weight": 70,
+  "nickname": "健身达人"
+}
+
+### 评估力量水平（需要token）
+POST http://localhost:3000/api/fitness/assess
+GET http://localhost:3000/api/fitness/assess
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "assessments": [
+    {
+      "exercise": "bench_press",
+      "oneRepMax": 85
+    },
+    {
+      "exercise": "deadlift",
+      "oneRepMax": 150
+    },
+    {
+      "exercise": "squat",
+      "oneRepMax": 120
+    }
+  ],
+  "ageGroup": "25-39"
+}
