@@ -47,6 +47,8 @@ if (!fs.existsSync(uploadDir)) {
 try {
   app.use('/api/auth', require('./routes/auth'));
   app.use('/api/fitness', require('./routes/fitness'));
+  app.use('/api/powerlifting', require('./routes/powerlifting'));
+
 } catch (error) {
   console.error('❌ 路由导入失败:', error.message);
   process.exit(1);
@@ -61,7 +63,8 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth/register, /api/auth/login, /api/auth/profile',
-      fitness: '/api/fitness/standards, /api/fitness/assess'
+      fitness: '/api/fitness/standards, /api/fitness/assess',
+      powerlifting: '/api/powerlifting/evaluate, /api/powerlifting/level'
     }
   });
 });
@@ -86,10 +89,16 @@ app.use((err, req, res, next) => {
 });
 
 // 启动服务器
-const server = app.listen(port, () => {
-  console.log(`🚀 健身App API服务启动在 http://localhost:${port}`);
-  console.log(`🔐 认证接口: http://localhost:${port}/api/auth`);
-  console.log(`💪 健身接口: http://localhost:${port}/api/fitness`);
+// const server = app.listen(port, () => {
+  // console.log(`🚀 健身App API服务启动在 http://localhost:${port}`);
+  // console.log(`🔐 认证接口: http://localhost:${port}/api/auth`);
+  // console.log(`💪 健身接口: http://localhost:${port}/api/fitness`);
+  // console.log(`🏋️  力量举接口: http://localhost:${port}/api/powerlifting/evaluate`);
+  const server = app.listen(port, '0.0.0.0', () => {
+  console.log(`🚀 健身App API服务启动在 http://0.0.0.0:${port}`);
+  console.log(`🔐 认证接口: http://0.0.0.0:${port}/api/auth`);
+  console.log(`💪 健身接口: http://0.0.0.0:${port}/api/fitness`);
+  console.log(`🏋️  力量举接口: http://0.0.0.0:${port}/api/powerlifting/evaluate`);
 });
 
 // 优雅关闭
