@@ -7,6 +7,12 @@ const userSchema = new mongoose.Schema({
     unique: true,
     index: true
   },
+  tiejiId: {
+    type: Number,
+    required: true,
+    unique: true,
+    index: true
+  },
   phone: {
     type: String,
     required: false,
@@ -20,7 +26,8 @@ const userSchema = new mongoose.Schema({
   },
   nickname: {
     type: String,
-    default: ''
+    default: '',
+    maxlength: 12
   },
   avatarUrl: {
     type: String,

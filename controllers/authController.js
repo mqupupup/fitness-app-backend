@@ -10,6 +10,28 @@ const generateUserId = () => {
   return 'user_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
 };
 
+// 生成唯一铁纪ID（8位数字）
+const generateTiejiId = async () => {
+  let tiejiId;
+  let exists = true;
+  let attempts = 0;
+  
+  while (exists && attempts < 10) {
+    // 生成 10000000 - 99999999 之间的8位数字
+    tiejiId = Math.floor(10000000 + Math.random() * 90000000);
+    const user = await User.findOne({ tiejiId });
+    exists = !!user;
+    attempts++;
+  }
+  
+  if (exists) {
+    // 如果10次都重复，用时间戳后8位兜底
+    tiejiId = parseInt(Date.now().toString().slice(-8));
+  }
+  
+  return tiejiId;
+};
+
 // 生成 token
 const generateToken = (user) => {
   return jwt.sign(
@@ -23,6 +45,7 @@ const generateToken = (user) => {
 const formatUser = (user) => {
   return {
     userId: user.userId,
+    tiejiId: user.tiejiId,
     phone: user.phone,
     nickname: user.nickname,
     avatarUrl: user.avatarUrl,
@@ -66,6 +89,14 @@ exports.register = async (req, res) => {
       });
     }
 
+    // 昵称长度验证
+    if (nickname && nickname.length > 12) {
+      return res.status(400).json({
+        success: false,
+        message: '昵称长度不能超过12个字符'
+      });
+    }
+
     // 检查用户是否已存在
     const existingUser = await User.findOne({ phone });
     if (existingUser) {
@@ -80,8 +111,10 @@ exports.register = async (req, res) => {
 
     // 创建新用户
     const userId = generateUserId();
+    const tiejiId = await generateTiejiId();
     const user = new User({
       userId,
+      tiejiId,
       phone,
       password: hashedPassword,
       nickname: nickname || `用户${userId.slice(-4)}`,
@@ -222,10 +255,12 @@ exports.wechatLogin = async (req, res) => {
 
       if (!user) {
         const userId = generateUserId();
+        const tiejiId = await generateTiejiId();
         const randomPassword = await bcrypt.hash(generateUserId(), SALT_ROUNDS);
 
         user = new User({
           userId,
+          tiejiId,
           // 微信用户不设置 phone，稀疏索引会忽略 undefined
           password: randomPassword,
           nickname: mockUserInfo.nickname,
@@ -295,10 +330,12 @@ exports.wechatLogin = async (req, res) => {
     if (!user) {
       // 新用户，创建账号
       const userId = generateUserId();
+      const tiejiId = await generateTiejiId();
       const randomPassword = await bcrypt.hash(generateUserId(), SALT_ROUNDS);
 
       user = new User({
         userId,
+        tiejiId,
         // 微信用户不设置 phone，稀疏索引会忽略 undefined，可后续绑定
         password: randomPassword,
         nickname: wechatUserInfo?.nickname || `微信用户${userId.slice(-4)}`,
@@ -381,6 +418,117 @@ exports.getProfile = async (req, res) => {
   }
 };
 
+// 更新用户信息（昵称、头像、性别、年龄、身高、体重等）
+exports.updateProfile = async (req, res) => {
+  try {
+    console.log('✏️ 更新用户信息');
+
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: '未登录或登录已过期'
+      });
+    }
+
+    const user = await User.findOne({ userId });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: '用户不存在'
+      });
+    }
+
+    // 允许更新的字段
+    const allowedFields = ['nickname', 'avatarUrl', 'gender', 'age', 'height', 'weight'];
+    const updateData = {};
+
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    }
+
+    // 昵称长度验证
+    if (updateData.nickname) {
+      if (updateData.nickname.length < 1 || updateData.nickname.length > 12) {
+        return res.status(400).json({
+          success: false,
+          message: '昵称长度应在1-12个字符之间'
+        });
+      }
+    }
+
+    // 性别验证
+    if (updateData.gender && !['male', 'female'].includes(updateData.gender)) {
+      return res.status(400).json({
+        success: false,
+        message: '性别只能为 male 或 female'
+      });
+    }
+
+    // 年龄验证
+    if (updateData.age !== undefined && updateData.age !== null) {
+      if (typeof updateData.age !== 'number' || updateData.age < 10 || updateData.age > 120) {
+        return res.status(400).json({
+          success: false,
+          message: '年龄应在10-120之间'
+        });
+      }
+    }
+
+    // 身高验证
+    if (updateData.height !== undefined && updateData.height !== null) {
+      if (typeof updateData.height !== 'number' || updateData.height < 50 || updateData.height > 250) {
+        return res.status(400).json({
+          success: false,
+          message: '身高应在50-250cm之间'
+        });
+      }
+    }
+
+    // 体重验证
+    if (updateData.weight !== undefined && updateData.weight !== null) {
+      if (typeof updateData.weight !== 'number' || updateData.weight < 20 || updateData.weight > 300) {
+        return res.status(400).json({
+          success: false,
+          message: '体重应在20-300kg之间'
+        });
+      }
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: '没有需要更新的字段'
+      });
+    }
+
+    // 更新用户信息
+    const updatedUser = await User.findOneAndUpdate(
+      { userId },
+      { $set: updateData },
+      { new: true }
+    );
+
+    console.log('✅ 用户信息更新成功:', userId, '更新字段:', Object.keys(updateData));
+
+    res.json({
+      success: true,
+      message: '更新成功',
+      data: formatUser(updatedUser)
+    });
+
+  } catch (error) {
+    console.error('❌ 更新用户信息错误:', error.message);
+    res.status(500).json({
+      success: false,
+      message: '服务器内部错误',
+      error: error.message
+    });
+  }
+};
+
 // 退出登录（JWT 无状态，前端清除 token 即可，此接口仅做记录）
 exports.logout = async (req, res) => {
   try {
@@ -394,6 +542,46 @@ exports.logout = async (req, res) => {
     res.status(500).json({
       success: false,
       message: '服务器内部错误'
+    });
+  }
+};
+
+// 注销账号（删除用户数据）
+exports.deleteAccount = async (req, res) => {
+  try {
+    console.log('🗑️ 用户注销账号');
+
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: '未登录或登录已过期'
+      });
+    }
+
+    const user = await User.findOne({ userId });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: '用户不存在'
+      });
+    }
+
+    // 删除用户数据
+    await User.deleteOne({ userId });
+    console.log('✅ 用户账号已注销:', userId, '铁纪ID:', user.tiejiId);
+
+    res.json({
+      success: true,
+      message: '账号已注销'
+    });
+
+  } catch (error) {
+    console.error('❌ 注销账号错误:', error.message);
+    res.status(500).json({
+      success: false,
+      message: '服务器内部错误',
+      error: error.message
     });
   }
 };

@@ -10,6 +10,8 @@ router.post('/wechat-login', authController.wechatLogin);
 
 // 需要登录的接口
 router.get('/profile', authMiddleware, authController.getProfile);
+router.put('/profile', authMiddleware, authController.updateProfile);
 router.post('/logout', authMiddleware, authController.logout);
+router.delete('/account', authMiddleware, authController.deleteAccount);
 
 module.exports = router;
