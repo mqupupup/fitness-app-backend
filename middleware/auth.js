@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const JWT_SECRET = process.env.JWT_SECRET || 'your_strong_jwt_secret_here_123!@#';
+
 const authMiddleware = async (req, res, next) => {
   try {
     // 从请求头获取token
@@ -17,7 +19,7 @@ const authMiddleware = async (req, res, next) => {
     // 验证token
     let decoded;
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET);
+      decoded = jwt.verify(token, JWT_SECRET);
     } catch (error) {
       if (error.name === 'TokenExpiredError') {
         return res.status(401).json({
@@ -66,7 +68,6 @@ const adminMiddleware = (req, res, next) => {
   next();
 };
 
-module.exports = {
-  authMiddleware,
-  adminMiddleware
-};
+module.exports = authMiddleware;
+module.exports.authMiddleware = authMiddleware;
+module.exports.adminMiddleware = adminMiddleware;
