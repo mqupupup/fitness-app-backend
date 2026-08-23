@@ -1,215 +1,313 @@
-// utils/fitness-standards.js
-
 /**
- * 力量标准数据库 (24-39岁 1RM)
- * 数据来源：用户提供的 Strength Standard 图表
+ * 力量标准数据库 (1RM, kg)
+ * 数据来源: strengthlevel.com (2014-2026 社区真实训练数据)
+ *  - 深蹲: 7,039,938 有效结果 (男6,014,970 / 女1,024,968)
+ *  - 卧推: 10,923,537 有效结果 (男9,906,475 / 女1,017,062)
+ *  - 硬拉: 6,393,746 有效结果 (男5,398,185 / 女995,561)
+ * 包含维度: 按体重分档(byBodyweight) + 按年龄分档(byAge)
+ * 动作: squat(深蹲) / bench_press(卧推) / deadlift(硬拉)
+ * 性别: male / female
+ * 等级: beginner(前5%) / novice(前20%) / intermediate(前50%) / advanced(前80%) / elite(前95%)
+ * 杠铃重量含杆重(标准20kg)
  */
 
 const standards = {
   male: {
-    bench_press: [
-      { bodyweight: 50, Beginner: 23, Novice: 37, Intermediate: 55, Advanced: 77, Elite: 102 },
-      { bodyweight: 55, Beginner: 28, Novice: 43, Intermediate: 63, Advanced: 86, Elite: 112 },
-      { bodyweight: 60, Beginner: 33, Novice: 49, Intermediate: 70, Advanced: 95, Elite: 121 },
-      { bodyweight: 65, Beginner: 38, Novice: 55, Intermediate: 77, Advanced: 103, Elite: 130 },
-      { bodyweight: 70, Beginner: 43, Novice: 61, Intermediate: 84, Advanced: 110, Elite: 139 },
-      { bodyweight: 75, Beginner: 47, Novice: 67, Intermediate: 91, Advanced: 118, Elite: 147 },
-      { bodyweight: 80, Beginner: 52, Novice: 72, Intermediate: 97, Advanced: 125, Elite: 155 },
-      { bodyweight: 85, Beginner: 57, Novice: 78, Intermediate: 103, Advanced: 132, Elite: 163 },
-      { bodyweight: 90, Beginner: 61, Novice: 83, Intermediate: 109, Advanced: 139, Elite: 171 },
-      { bodyweight: 95, Beginner: 65, Novice: 88, Intermediate: 115, Advanced: 145, Elite: 178 },
-      { bodyweight: 100, Beginner: 70, Novice: 93, Intermediate: 121, Advanced: 152, Elite: 185 },
-      { bodyweight: 105, Beginner: 74, Novice: 98, Intermediate: 126, Advanced: 158, Elite: 192 },
-      { bodyweight: 110, Beginner: 78, Novice: 102, Intermediate: 131, Advanced: 164, Elite: 199 },
-      { bodyweight: 115, Beginner: 82, Novice: 107, Intermediate: 137, Advanced: 170, Elite: 205 },
-      { bodyweight: 120, Beginner: 86, Novice: 112, Intermediate: 142, Advanced: 176, Elite: 211 },
-      { bodyweight: 125, Beginner: 90, Novice: 116, Intermediate: 147, Advanced: 181, Elite: 217 },
-      { bodyweight: 130, Beginner: 94, Novice: 120, Intermediate: 152, Advanced: 187, Elite: 223 },
-      { bodyweight: 135, Beginner: 98, Novice: 125, Intermediate: 156, Advanced: 192, Elite: 229 },
-      { bodyweight: 140, Beginner: 101, Novice: 129, Intermediate: 161, Advanced: 197, Elite: 235 },
-    ],
-    squat: [
-      { bodyweight: 50, Beginner: 33, Novice: 51, Intermediate: 75, Advanced: 103, Elite: 134 },
-      { bodyweight: 55, Beginner: 39, Novice: 59, Intermediate: 84, Advanced: 114, Elite: 147 },
-      { bodyweight: 60, Beginner: 46, Novice: 67, Intermediate: 94, Advanced: 125, Elite: 159 },
-      { bodyweight: 65, Beginner: 52, Novice: 75, Intermediate: 103, Advanced: 136, Elite: 171 },
-      { bodyweight: 70, Beginner: 58, Novice: 82, Intermediate: 112, Advanced: 146, Elite: 183 },
-      { bodyweight: 75, Beginner: 65, Novice: 90, Intermediate: 120, Advanced: 156, Elite: 194 },
-      { bodyweight: 80, Beginner: 71, Novice: 97, Intermediate: 129, Advanced: 165, Elite: 204 },
-      { bodyweight: 85, Beginner: 77, Novice: 104, Intermediate: 137, Advanced: 174, Elite: 214 },
-      { bodyweight: 90, Beginner: 83, Novice: 111, Intermediate: 145, Advanced: 183, Elite: 224 },
-      { bodyweight: 95, Beginner: 88, Novice: 117, Intermediate: 152, Advanced: 192, Elite: 233 },
-      { bodyweight: 100, Beginner: 94, Novice: 124, Intermediate: 160, Advanced: 200, Elite: 242 },
-      { bodyweight: 105, Beginner: 99, Novice: 130, Intermediate: 167, Advanced: 208, Elite: 251 },
-      { bodyweight: 110, Beginner: 105, Novice: 136, Intermediate: 174, Advanced: 216, Elite: 260 },
-      { bodyweight: 115, Beginner: 110, Novice: 142, Intermediate: 181, Advanced: 223, Elite: 268 },
-      { bodyweight: 120, Beginner: 115, Novice: 148, Intermediate: 187, Advanced: 231, Elite: 276 },
-      { bodyweight: 125, Beginner: 120, Novice: 154, Intermediate: 194, Advanced: 238, Elite: 284 },
-      { bodyweight: 130, Beginner: 125, Novice: 160, Intermediate: 200, Advanced: 245, Elite: 292 },
-      { bodyweight: 135, Beginner: 130, Novice: 165, Intermediate: 206, Advanced: 252, Elite: 299 },
-      { bodyweight: 140, Beginner: 135, Novice: 171, Intermediate: 212, Advanced: 258, Elite: 307 },
-    ],
-    deadlift: [
-      { bodyweight: 50, Beginner: 43, Novice: 64, Intermediate: 91, Advanced: 123, Elite: 158 },
-      { bodyweight: 55, Beginner: 50, Novice: 73, Intermediate: 102, Advanced: 136, Elite: 173 },
-      { bodyweight: 60, Beginner: 57, Novice: 82, Intermediate: 113, Advanced: 148, Elite: 186 },
-      { bodyweight: 65, Beginner: 65, Novice: 91, Intermediate: 123, Advanced: 159, Elite: 199 },
-      { bodyweight: 70, Beginner: 72, Novice: 99, Intermediate: 132, Advanced: 170, Elite: 211 },
-      { bodyweight: 75, Beginner: 79, Novice: 107, Intermediate: 142, Advanced: 181, Elite: 223 },
-      { bodyweight: 80, Beginner: 85, Novice: 115, Intermediate: 151, Advanced: 191, Elite: 234 },
-      { bodyweight: 85, Beginner: 92, Novice: 123, Intermediate: 159, Advanced: 201, Elite: 245 },
-      { bodyweight: 90, Beginner: 98, Novice: 130, Intermediate: 168, Advanced: 211, Elite: 256 },
-      { bodyweight: 95, Beginner: 105, Novice: 137, Intermediate: 176, Advanced: 220, Elite: 266 },
-      { bodyweight: 100, Beginner: 111, Novice: 144, Intermediate: 184, Advanced: 229, Elite: 276 },
-      { bodyweight: 105, Beginner: 117, Novice: 151, Intermediate: 192, Advanced: 237, Elite: 285 },
-      { bodyweight: 110, Beginner: 123, Novice: 158, Intermediate: 199, Advanced: 246, Elite: 294 },
-      { bodyweight: 115, Beginner: 129, Novice: 164, Intermediate: 207, Advanced: 254, Elite: 303 },
-      { bodyweight: 120, Beginner: 134, Novice: 171, Intermediate: 214, Advanced: 262, Elite: 312 },
-      { bodyweight: 125, Beginner: 140, Novice: 177, Intermediate: 221, Advanced: 269, Elite: 320 },
-      { bodyweight: 130, Beginner: 145, Novice: 183, Intermediate: 228, Advanced: 277, Elite: 328 },
-      { bodyweight: 135, Beginner: 151, Novice: 189, Intermediate: 234, Advanced: 284, Elite: 336 },
-      { bodyweight: 140, Beginner: 156, Novice: 195, Intermediate: 241, Advanced: 291, Elite: 344 },
-    ]
+    squat: {
+      average: 131,
+      byBodyweight: [
+        { bodyweight: 50, beginner: 36, novice: 55, intermediate: 78, advanced: 106, elite: 137 },
+        { bodyweight: 55, beginner: 43, novice: 63, intermediate: 88, advanced: 118, elite: 150 },
+        { bodyweight: 60, beginner: 49, novice: 71, intermediate: 98, advanced: 129, elite: 162 },
+        { bodyweight: 65, beginner: 56, novice: 79, intermediate: 107, advanced: 139, elite: 174 },
+        { bodyweight: 70, beginner: 62, novice: 86, intermediate: 116, advanced: 149, elite: 185 },
+        { bodyweight: 75, beginner: 69, novice: 94, intermediate: 124, advanced: 159, elite: 196 },
+        { bodyweight: 80, beginner: 75, novice: 101, intermediate: 132, advanced: 168, elite: 206 },
+        { bodyweight: 85, beginner: 81, novice: 108, intermediate: 140, advanced: 177, elite: 216 },
+        { bodyweight: 90, beginner: 87, novice: 115, intermediate: 148, advanced: 186, elite: 226 },
+        { bodyweight: 95, beginner: 93, novice: 121, intermediate: 156, advanced: 194, elite: 235 },
+        { bodyweight: 100, beginner: 98, novice: 128, intermediate: 163, advanced: 203, elite: 244 },
+        { bodyweight: 105, beginner: 104, novice: 134, intermediate: 170, advanced: 211, elite: 253 },
+        { bodyweight: 110, beginner: 109, novice: 140, intermediate: 177, advanced: 218, elite: 261 },
+        { bodyweight: 115, beginner: 115, novice: 147, intermediate: 184, advanced: 226, elite: 270 },
+        { bodyweight: 120, beginner: 120, novice: 152, intermediate: 191, advanced: 233, elite: 278 },
+        { bodyweight: 125, beginner: 125, novice: 158, intermediate: 197, advanced: 240, elite: 285 },
+        { bodyweight: 130, beginner: 130, novice: 164, intermediate: 203, advanced: 247, elite: 293 },
+        { bodyweight: 135, beginner: 135, novice: 169, intermediate: 209, advanced: 254, elite: 300 },
+        { bodyweight: 140, beginner: 140, novice: 175, intermediate: 215, advanced: 261, elite: 307 },
+      ],
+      byAge: [
+        { age: 15, beginner: 56, novice: 81, intermediate: 112, advanced: 148, elite: 186 },
+        { age: 20, beginner: 64, novice: 93, intermediate: 128, advanced: 169, elite: 213 },
+        { age: 25, beginner: 66, novice: 95, intermediate: 131, advanced: 173, elite: 219 },
+        { age: 30, beginner: 66, novice: 95, intermediate: 131, advanced: 173, elite: 219 },
+        { age: 35, beginner: 66, novice: 95, intermediate: 131, advanced: 173, elite: 219 },
+        { age: 40, beginner: 66, novice: 95, intermediate: 131, advanced: 173, elite: 219 },
+        { age: 45, beginner: 62, novice: 90, intermediate: 124, advanced: 164, elite: 207 },
+        { age: 50, beginner: 58, novice: 84, intermediate: 116, advanced: 153, elite: 194 },
+        { age: 55, beginner: 54, novice: 78, intermediate: 107, advanced: 141, elite: 179 },
+        { age: 60, beginner: 49, novice: 71, intermediate: 98, advanced: 129, elite: 163 },
+        { age: 65, beginner: 45, novice: 64, intermediate: 89, advanced: 117, elite: 148 },
+        { age: 70, beginner: 40, novice: 58, intermediate: 80, advanced: 105, elite: 133 },
+        { age: 75, beginner: 36, novice: 52, intermediate: 71, advanced: 94, elite: 119 },
+        { age: 80, beginner: 32, novice: 46, intermediate: 64, advanced: 84, elite: 107 },
+        { age: 85, beginner: 29, novice: 42, intermediate: 57, advanced: 76, elite: 96 },
+        { age: 90, beginner: 26, novice: 37, intermediate: 51, advanced: 68, elite: 86 },
+      ],
+    },
+    bench_press: {
+      average: 96,
+      byBodyweight: [
+        { bodyweight: 50, beginner: 27, novice: 41, intermediate: 58, advanced: 78, elite: 101 },
+        { bodyweight: 55, beginner: 32, novice: 47, intermediate: 65, advanced: 87, elite: 110 },
+        { bodyweight: 60, beginner: 37, novice: 53, intermediate: 72, advanced: 95, elite: 119 },
+        { bodyweight: 65, beginner: 42, novice: 59, intermediate: 79, advanced: 102, elite: 128 },
+        { bodyweight: 70, beginner: 47, novice: 64, intermediate: 85, advanced: 110, elite: 136 },
+        { bodyweight: 75, beginner: 51, novice: 70, intermediate: 92, advanced: 117, elite: 144 },
+        { bodyweight: 80, beginner: 56, novice: 75, intermediate: 98, advanced: 124, elite: 151 },
+        { bodyweight: 85, beginner: 60, novice: 80, intermediate: 104, advanced: 130, elite: 158 },
+        { bodyweight: 90, beginner: 65, novice: 85, intermediate: 109, advanced: 137, elite: 165 },
+        { bodyweight: 95, beginner: 69, novice: 90, intermediate: 115, advanced: 143, elite: 172 },
+        { bodyweight: 100, beginner: 73, novice: 95, intermediate: 120, advanced: 149, elite: 179 },
+        { bodyweight: 105, beginner: 77, novice: 99, intermediate: 125, advanced: 155, elite: 185 },
+        { bodyweight: 110, beginner: 81, novice: 104, intermediate: 131, advanced: 160, elite: 191 },
+        { bodyweight: 115, beginner: 85, novice: 108, intermediate: 135, advanced: 166, elite: 197 },
+        { bodyweight: 120, beginner: 89, novice: 113, intermediate: 140, advanced: 171, elite: 203 },
+        { bodyweight: 125, beginner: 93, novice: 117, intermediate: 145, advanced: 176, elite: 209 },
+        { bodyweight: 130, beginner: 97, novice: 121, intermediate: 150, advanced: 181, elite: 214 },
+        { bodyweight: 135, beginner: 100, novice: 125, intermediate: 154, advanced: 186, elite: 220 },
+        { bodyweight: 140, beginner: 104, novice: 129, intermediate: 158, advanced: 191, elite: 225 },
+      ],
+      byAge: [
+        { age: 15, beginner: 41, novice: 60, intermediate: 82, advanced: 108, elite: 137 },
+        { age: 20, beginner: 47, novice: 68, intermediate: 94, advanced: 124, elite: 156 },
+        { age: 25, beginner: 49, novice: 70, intermediate: 96, advanced: 127, elite: 160 },
+        { age: 30, beginner: 49, novice: 70, intermediate: 96, advanced: 127, elite: 160 },
+        { age: 35, beginner: 49, novice: 70, intermediate: 96, advanced: 127, elite: 160 },
+        { age: 40, beginner: 49, novice: 70, intermediate: 96, advanced: 127, elite: 160 },
+        { age: 45, beginner: 46, novice: 66, intermediate: 91, advanced: 120, elite: 152 },
+        { age: 50, beginner: 43, novice: 62, intermediate: 85, advanced: 112, elite: 142 },
+        { age: 55, beginner: 40, novice: 57, intermediate: 79, advanced: 104, elite: 131 },
+        { age: 60, beginner: 36, novice: 52, intermediate: 72, advanced: 95, elite: 120 },
+        { age: 65, beginner: 33, novice: 47, intermediate: 65, advanced: 86, elite: 108 },
+        { age: 70, beginner: 29, novice: 42, intermediate: 59, advanced: 77, elite: 97 },
+        { age: 75, beginner: 26, novice: 38, intermediate: 52, advanced: 69, elite: 87 },
+        { age: 80, beginner: 24, novice: 34, intermediate: 47, advanced: 62, elite: 78 },
+        { age: 85, beginner: 21, novice: 31, intermediate: 42, advanced: 56, elite: 70 },
+        { age: 90, beginner: 19, novice: 27, intermediate: 38, advanced: 50, elite: 63 },
+      ],
+    },
+    deadlift: {
+      average: 154,
+      byBodyweight: [
+        { bodyweight: 50, beginner: 46, novice: 68, intermediate: 96, advanced: 129, elite: 164 },
+        { bodyweight: 55, beginner: 54, novice: 77, intermediate: 107, advanced: 141, elite: 178 },
+        { bodyweight: 60, beginner: 61, novice: 86, intermediate: 117, advanced: 153, elite: 191 },
+        { bodyweight: 65, beginner: 68, novice: 95, intermediate: 127, advanced: 164, elite: 204 },
+        { bodyweight: 70, beginner: 75, novice: 103, intermediate: 137, advanced: 175, elite: 216 },
+        { bodyweight: 75, beginner: 82, novice: 111, intermediate: 146, advanced: 186, elite: 228 },
+        { bodyweight: 80, beginner: 89, novice: 119, intermediate: 155, advanced: 196, elite: 239 },
+        { bodyweight: 85, beginner: 96, novice: 127, intermediate: 164, advanced: 205, elite: 250 },
+        { bodyweight: 90, beginner: 102, novice: 134, intermediate: 172, advanced: 215, elite: 260 },
+        { bodyweight: 95, beginner: 108, novice: 141, intermediate: 180, advanced: 224, elite: 270 },
+        { bodyweight: 100, beginner: 114, novice: 148, intermediate: 188, advanced: 232, elite: 279 },
+        { bodyweight: 105, beginner: 120, novice: 155, intermediate: 195, advanced: 241, elite: 289 },
+        { bodyweight: 110, beginner: 126, novice: 161, intermediate: 203, advanced: 249, elite: 298 },
+        { bodyweight: 115, beginner: 132, novice: 168, intermediate: 210, advanced: 257, elite: 306 },
+        { bodyweight: 120, beginner: 137, novice: 174, intermediate: 217, advanced: 265, elite: 315 },
+        { bodyweight: 125, beginner: 143, novice: 180, intermediate: 224, advanced: 272, elite: 323 },
+        { bodyweight: 130, beginner: 148, novice: 186, intermediate: 231, advanced: 280, elite: 331 },
+        { bodyweight: 135, beginner: 153, novice: 192, intermediate: 237, advanced: 287, elite: 339 },
+        { bodyweight: 140, beginner: 159, novice: 198, intermediate: 243, advanced: 294, elite: 346 },
+      ],
+      byAge: [
+        { age: 15, beginner: 68, novice: 96, intermediate: 131, advanced: 172, elite: 216 },
+        { age: 20, beginner: 78, novice: 110, intermediate: 150, advanced: 196, elite: 246 },
+        { age: 25, beginner: 80, novice: 113, intermediate: 154, advanced: 202, elite: 253 },
+        { age: 30, beginner: 80, novice: 113, intermediate: 154, advanced: 202, elite: 253 },
+        { age: 35, beginner: 80, novice: 113, intermediate: 154, advanced: 202, elite: 253 },
+        { age: 40, beginner: 80, novice: 113, intermediate: 154, advanced: 202, elite: 253 },
+        { age: 45, beginner: 75, novice: 107, intermediate: 146, advanced: 191, elite: 240 },
+        { age: 50, beginner: 71, novice: 100, intermediate: 136, advanced: 179, elite: 224 },
+        { age: 55, beginner: 65, novice: 92, intermediate: 126, advanced: 165, elite: 207 },
+        { age: 60, beginner: 59, novice: 84, intermediate: 115, advanced: 150, elite: 189 },
+        { age: 65, beginner: 54, novice: 76, intermediate: 104, advanced: 136, elite: 171 },
+        { age: 70, beginner: 48, novice: 69, intermediate: 94, advanced: 123, elite: 154 },
+        { age: 75, beginner: 43, novice: 62, intermediate: 84, advanced: 110, elite: 138 },
+        { age: 80, beginner: 39, novice: 55, intermediate: 75, advanced: 98, elite: 123 },
+        { age: 85, beginner: 35, novice: 49, intermediate: 67, advanced: 88, elite: 111 },
+        { age: 90, beginner: 31, novice: 44, intermediate: 60, advanced: 79, elite: 99 },
+      ],
+    },
+    powerlifting_total: {
+      average: 380,
+      byBodyweight: [
+        { bodyweight: 50, beginner: 138, novice: 185, intermediate: 242, advanced: 307, elite: 375 },
+        { bodyweight: 55, beginner: 160, novice: 210, intermediate: 270, advanced: 338, elite: 410 },
+        { bodyweight: 60, beginner: 180, novice: 234, intermediate: 297, advanced: 368, elite: 443 },
+        { bodyweight: 65, beginner: 201, novice: 257, intermediate: 323, advanced: 397, elite: 475 },
+        { bodyweight: 70, beginner: 221, novice: 279, intermediate: 348, advanced: 425, elite: 505 },
+        { bodyweight: 75, beginner: 240, novice: 301, intermediate: 372, advanced: 451, elite: 534 },
+        { bodyweight: 80, beginner: 259, novice: 322, intermediate: 396, advanced: 477, elite: 562 },
+        { bodyweight: 85, beginner: 277, novice: 342, intermediate: 418, advanced: 502, elite: 589 },
+        { bodyweight: 90, beginner: 295, novice: 362, intermediate: 440, advanced: 526, elite: 614 },
+        { bodyweight: 95, beginner: 312, novice: 381, intermediate: 461, advanced: 549, elite: 639 },
+        { bodyweight: 100, beginner: 329, novice: 400, intermediate: 482, advanced: 571, elite: 663 },
+        { bodyweight: 105, beginner: 345, novice: 418, intermediate: 502, advanced: 593, elite: 687 },
+        { bodyweight: 110, beginner: 362, novice: 436, intermediate: 521, advanced: 614, elite: 709 },
+        { bodyweight: 115, beginner: 377, novice: 453, intermediate: 540, advanced: 634, elite: 731 },
+        { bodyweight: 120, beginner: 393, novice: 470, intermediate: 558, advanced: 654, elite: 753 },
+        { bodyweight: 125, beginner: 408, novice: 486, intermediate: 576, advanced: 673, elite: 773 },
+        { bodyweight: 130, beginner: 422, novice: 502, intermediate: 594, advanced: 692, elite: 794 },
+        { bodyweight: 135, beginner: 437, novice: 518, intermediate: 611, advanced: 711, elite: 813 },
+        { bodyweight: 140, beginner: 451, novice: 533, intermediate: 627, advanced: 729, elite: 833 },
+      ],
+    },
   },
   female: {
-    bench_press: [
-      { bodyweight: 40, Beginner: 8, Novice: 18, Intermediate: 31, Advanced: 49, Elite: 69 },
-      { bodyweight: 45, Beginner: 10, Novice: 21, Intermediate: 35, Advanced: 54, Elite: 75 },
-      { bodyweight: 50, Beginner: 13, Novice: 24, Intermediate: 39, Advanced: 58, Elite: 80 },
-      { bodyweight: 55, Beginner: 15, Novice: 26, Intermediate: 43, Advanced: 63, Elite: 85 },
-      { bodyweight: 60, Beginner: 17, Novice: 29, Intermediate: 46, Advanced: 67, Elite: 90 },
-      { bodyweight: 65, Beginner: 19, Novice: 32, Intermediate: 49, Advanced: 71, Elite: 95 },
-      { bodyweight: 70, Beginner: 21, Novice: 34, Intermediate: 52, Advanced: 74, Elite: 99 },
-      { bodyweight: 75, Beginner: 22, Novice: 37, Intermediate: 55, Advanced: 78, Elite: 103 },
-      { bodyweight: 80, Beginner: 24, Novice: 39, Intermediate: 58, Advanced: 81, Elite: 107 },
-      { bodyweight: 85, Beginner: 26, Novice: 41, Intermediate: 61, Advanced: 85, Elite: 111 },
-      { bodyweight: 90, Beginner: 28, Novice: 44, Intermediate: 64, Advanced: 88, Elite: 114 },
-      { bodyweight: 95, Beginner: 30, Novice: 46, Intermediate: 66, Advanced: 91, Elite: 118 },
-      { bodyweight: 100, Beginner: 31, Novice: 48, Intermediate: 69, Advanced: 94, Elite: 121 },
-      { bodyweight: 105, Beginner: 33, Novice: 50, Intermediate: 71, Advanced: 97, Elite: 124 },
-      { bodyweight: 110, Beginner: 34, Novice: 52, Intermediate: 74, Advanced: 99, Elite: 127 },
-      { bodyweight: 115, Beginner: 36, Novice: 54, Intermediate: 76, Advanced: 102, Elite: 130 },
-      { bodyweight: 120, Beginner: 38, Novice: 56, Intermediate: 78, Advanced: 105, Elite: 133 },
-    ],
-    squat: [
-      { bodyweight: 40, Beginner: 18, Novice: 32, Intermediate: 51, Advanced: 75, Elite: 101 },
-      { bodyweight: 45, Beginner: 21, Novice: 36, Intermediate: 56, Advanced: 81, Elite: 109 },
-      { bodyweight: 50, Beginner: 24, Novice: 40, Intermediate: 61, Advanced: 87, Elite: 115 },
-      { bodyweight: 55, Beginner: 27, Novice: 43, Intermediate: 65, Advanced: 92, Elite: 122 },
-      { bodyweight: 60, Beginner: 29, Novice: 47, Intermediate: 70, Advanced: 97, Elite: 127 },
-      { bodyweight: 65, Beginner: 32, Novice: 50, Intermediate: 74, Advanced: 102, Elite: 133 },
-      { bodyweight: 70, Beginner: 34, Novice: 53, Intermediate: 78, Advanced: 106, Elite: 138 },
-      { bodyweight: 75, Beginner: 37, Novice: 56, Intermediate: 81, Advanced: 111, Elite: 143 },
-      { bodyweight: 80, Beginner: 39, Novice: 59, Intermediate: 85, Advanced: 115, Elite: 148 },
-      { bodyweight: 85, Beginner: 42, Novice: 62, Intermediate: 88, Advanced: 119, Elite: 152 },
-      { bodyweight: 90, Beginner: 44, Novice: 65, Intermediate: 92, Advanced: 123, Elite: 156 },
-      { bodyweight: 95, Beginner: 46, Novice: 68, Intermediate: 95, Advanced: 126, Elite: 161 },
-      { bodyweight: 100, Beginner: 48, Novice: 70, Intermediate: 98, Advanced: 130, Elite: 164 },
-      { bodyweight: 105, Beginner: 50, Novice: 73, Intermediate: 101, Advanced: 133, Elite: 168 },
-      { bodyweight: 110, Beginner: 52, Novice: 75, Intermediate: 103, Advanced: 136, Elite: 172 },
-      { bodyweight: 115, Beginner: 54, Novice: 77, Intermediate: 106, Advanced: 139, Elite: 175 },
-      { bodyweight: 120, Beginner: 56, Novice: 80, Intermediate: 109, Advanced: 143, Elite: 179 },
-    ],
-    deadlift: [
-      { bodyweight: 40, Beginner: 24, Novice: 40, Intermediate: 62, Advanced: 89, Elite: 119 },
-      { bodyweight: 45, Beginner: 27, Novice: 45, Intermediate: 68, Advanced: 96, Elite: 127 },
-      { bodyweight: 50, Beginner: 31, Novice: 49, Intermediate: 73, Advanced: 102, Elite: 134 },
-      { bodyweight: 55, Beginner: 34, Novice: 53, Intermediate: 78, Advanced: 108, Elite: 141 },
-      { bodyweight: 60, Beginner: 37, Novice: 57, Intermediate: 83, Advanced: 113, Elite: 147 },
-      { bodyweight: 65, Beginner: 40, Novice: 61, Intermediate: 88, Advanced: 119, Elite: 153 },
-      { bodyweight: 70, Beginner: 43, Novice: 65, Intermediate: 92, Advanced: 124, Elite: 158 },
-      { bodyweight: 75, Beginner: 46, Novice: 68, Intermediate: 96, Advanced: 128, Elite: 164 },
-      { bodyweight: 80, Beginner: 49, Novice: 71, Intermediate: 100, Advanced: 133, Elite: 169 },
-      { bodyweight: 85, Beginner: 51, Novice: 74, Intermediate: 103, Advanced: 137, Elite: 173 },
-      { bodyweight: 90, Beginner: 54, Novice: 77, Intermediate: 107, Advanced: 141, Elite: 178 },
-      { bodyweight: 95, Beginner: 56, Novice: 80, Intermediate: 110, Advanced: 145, Elite: 182 },
-      { bodyweight: 100, Beginner: 59, Novice: 83, Intermediate: 114, Advanced: 149, Elite: 187 },
-      { bodyweight: 105, Beginner: 61, Novice: 86, Intermediate: 117, Advanced: 152, Elite: 191 },
-      { bodyweight: 110, Beginner: 63, Novice: 88, Intermediate: 120, Advanced: 156, Elite: 195 },
-      { bodyweight: 115, Beginner: 65, Novice: 91, Intermediate: 123, Advanced: 159, Elite: 198 },
-      { bodyweight: 120, Beginner: 67, Novice: 93, Intermediate: 126, Advanced: 162, Elite: 202 },
-    ]
-  }
+    squat: {
+      average: 76,
+      byBodyweight: [
+        { bodyweight: 40, beginner: 19, novice: 34, intermediate: 53, advanced: 76, elite: 102 },
+        { bodyweight: 45, beginner: 23, novice: 38, intermediate: 58, advanced: 82, elite: 110 },
+        { bodyweight: 50, beginner: 26, novice: 42, intermediate: 63, advanced: 88, elite: 116 },
+        { bodyweight: 55, beginner: 29, novice: 46, intermediate: 68, advanced: 94, elite: 123 },
+        { bodyweight: 60, beginner: 32, novice: 49, intermediate: 72, advanced: 99, elite: 129 },
+        { bodyweight: 65, beginner: 35, novice: 53, intermediate: 76, advanced: 104, elite: 134 },
+        { bodyweight: 70, beginner: 37, novice: 56, intermediate: 80, advanced: 109, elite: 140 },
+        { bodyweight: 75, beginner: 40, novice: 59, intermediate: 84, advanced: 113, elite: 145 },
+        { bodyweight: 80, beginner: 42, novice: 62, intermediate: 88, advanced: 117, elite: 149 },
+        { bodyweight: 85, beginner: 45, novice: 65, intermediate: 91, advanced: 121, elite: 154 },
+        { bodyweight: 90, beginner: 47, novice: 68, intermediate: 94, advanced: 125, elite: 158 },
+        { bodyweight: 95, beginner: 49, novice: 71, intermediate: 98, advanced: 129, elite: 162 },
+        { bodyweight: 100, beginner: 52, novice: 74, intermediate: 101, advanced: 132, elite: 166 },
+        { bodyweight: 105, beginner: 54, novice: 76, intermediate: 104, advanced: 136, elite: 170 },
+        { bodyweight: 110, beginner: 56, novice: 79, intermediate: 107, advanced: 139, elite: 174 },
+        { bodyweight: 115, beginner: 58, novice: 81, intermediate: 109, advanced: 142, elite: 177 },
+        { bodyweight: 120, beginner: 60, novice: 83, intermediate: 112, advanced: 145, elite: 181 },
+      ],
+      byAge: [
+        { age: 15, beginner: 28, novice: 44, intermediate: 65, advanced: 90, elite: 117 },
+        { age: 20, beginner: 32, novice: 50, intermediate: 74, advanced: 102, elite: 134 },
+        { age: 25, beginner: 32, novice: 51, intermediate: 76, advanced: 105, elite: 137 },
+        { age: 30, beginner: 32, novice: 51, intermediate: 76, advanced: 105, elite: 137 },
+        { age: 35, beginner: 32, novice: 51, intermediate: 76, advanced: 105, elite: 137 },
+        { age: 40, beginner: 32, novice: 51, intermediate: 76, advanced: 105, elite: 137 },
+        { age: 45, beginner: 31, novice: 49, intermediate: 72, advanced: 100, elite: 130 },
+        { age: 50, beginner: 29, novice: 45, intermediate: 67, advanced: 93, elite: 122 },
+        { age: 55, beginner: 26, novice: 42, intermediate: 62, advanced: 86, elite: 112 },
+        { age: 60, beginner: 24, novice: 38, intermediate: 57, advanced: 78, elite: 103 },
+        { age: 65, beginner: 22, novice: 35, intermediate: 51, advanced: 71, elite: 93 },
+        { age: 70, beginner: 20, novice: 31, intermediate: 46, advanced: 64, elite: 84 },
+        { age: 75, beginner: 18, novice: 28, intermediate: 41, advanced: 57, elite: 75 },
+        { age: 80, beginner: 16, novice: 25, intermediate: 37, advanced: 51, elite: 67 },
+        { age: 85, beginner: 14, novice: 22, intermediate: 33, advanced: 46, elite: 60 },
+        { age: 90, beginner: 13, novice: 20, intermediate: 30, advanced: 41, elite: 54 },
+      ],
+    },
+    bench_press: {
+      average: 51,
+      byBodyweight: [
+        { bodyweight: 40, beginner: 10, novice: 19, intermediate: 33, advanced: 49, elite: 68 },
+        { bodyweight: 45, beginner: 12, novice: 22, intermediate: 36, advanced: 54, elite: 74 },
+        { bodyweight: 50, beginner: 14, novice: 25, intermediate: 40, advanced: 58, elite: 79 },
+        { bodyweight: 55, beginner: 17, novice: 28, intermediate: 44, advanced: 62, elite: 84 },
+        { bodyweight: 60, beginner: 19, novice: 31, intermediate: 47, advanced: 66, elite: 88 },
+        { bodyweight: 65, beginner: 21, novice: 33, intermediate: 50, advanced: 70, elite: 92 },
+        { bodyweight: 70, beginner: 22, novice: 36, intermediate: 53, advanced: 74, elite: 96 },
+        { bodyweight: 75, beginner: 24, novice: 38, intermediate: 56, advanced: 77, elite: 100 },
+        { bodyweight: 80, beginner: 26, novice: 40, intermediate: 59, advanced: 80, elite: 104 },
+        { bodyweight: 85, beginner: 28, novice: 43, intermediate: 61, advanced: 83, elite: 107 },
+        { bodyweight: 90, beginner: 30, novice: 45, intermediate: 64, advanced: 86, elite: 111 },
+        { bodyweight: 95, beginner: 31, novice: 47, intermediate: 66, advanced: 89, elite: 114 },
+        { bodyweight: 100, beginner: 33, novice: 49, intermediate: 69, advanced: 92, elite: 117 },
+        { bodyweight: 105, beginner: 35, novice: 51, intermediate: 71, advanced: 94, elite: 120 },
+        { bodyweight: 110, beginner: 36, novice: 53, intermediate: 73, advanced: 97, elite: 123 },
+        { bodyweight: 115, beginner: 38, novice: 54, intermediate: 75, advanced: 99, elite: 126 },
+        { bodyweight: 120, beginner: 39, novice: 56, intermediate: 77, advanced: 102, elite: 128 },
+      ],
+      byAge: [
+        { age: 15, beginner: 17, novice: 28, intermediate: 43, advanced: 62, elite: 82 },
+        { age: 20, beginner: 19, novice: 32, intermediate: 49, advanced: 70, elite: 94 },
+        { age: 25, beginner: 19, novice: 33, intermediate: 51, advanced: 72, elite: 97 },
+        { age: 30, beginner: 19, novice: 33, intermediate: 51, advanced: 72, elite: 97 },
+        { age: 35, beginner: 19, novice: 33, intermediate: 51, advanced: 72, elite: 97 },
+        { age: 40, beginner: 19, novice: 33, intermediate: 51, advanced: 72, elite: 97 },
+        { age: 45, beginner: 18, novice: 31, intermediate: 48, advanced: 68, elite: 91 },
+        { age: 50, beginner: 17, novice: 29, intermediate: 45, advanced: 64, elite: 86 },
+        { age: 55, beginner: 16, novice: 27, intermediate: 41, advanced: 59, elite: 79 },
+        { age: 60, beginner: 14, novice: 24, intermediate: 38, advanced: 54, elite: 72 },
+        { age: 65, beginner: 13, novice: 22, intermediate: 34, advanced: 49, elite: 65 },
+        { age: 70, beginner: 12, novice: 20, intermediate: 31, advanced: 44, elite: 59 },
+        { age: 75, beginner: 11, novice: 18, intermediate: 28, advanced: 39, elite: 53 },
+        { age: 80, beginner: 9, novice: 16, intermediate: 25, advanced: 35, elite: 47 },
+        { age: 85, beginner: 8, novice: 14, intermediate: 22, advanced: 32, elite: 42 },
+        { age: 90, beginner: 8, novice: 13, intermediate: 20, advanced: 28, elite: 38 },
+      ],
+    },
+    deadlift: {
+      average: 91,
+      byBodyweight: [
+        { bodyweight: 40, beginner: 26, novice: 43, intermediate: 65, advanced: 92, elite: 121 },
+        { bodyweight: 45, beginner: 30, novice: 48, intermediate: 71, advanced: 99, elite: 129 },
+        { bodyweight: 50, beginner: 34, novice: 52, intermediate: 76, advanced: 105, elite: 136 },
+        { bodyweight: 55, beginner: 37, novice: 56, intermediate: 81, advanced: 111, elite: 143 },
+        { bodyweight: 60, beginner: 40, novice: 60, intermediate: 86, advanced: 116, elite: 149 },
+        { bodyweight: 65, beginner: 43, novice: 64, intermediate: 90, advanced: 121, elite: 155 },
+        { bodyweight: 70, beginner: 46, novice: 68, intermediate: 95, advanced: 126, elite: 160 },
+        { bodyweight: 75, beginner: 49, novice: 71, intermediate: 99, advanced: 131, elite: 166 },
+        { bodyweight: 80, beginner: 52, novice: 74, intermediate: 102, advanced: 135, elite: 170 },
+        { bodyweight: 85, beginner: 54, novice: 77, intermediate: 106, advanced: 139, elite: 175 },
+        { bodyweight: 90, beginner: 57, novice: 80, intermediate: 109, advanced: 143, elite: 180 },
+        { bodyweight: 95, beginner: 59, novice: 83, intermediate: 113, advanced: 147, elite: 184 },
+        { bodyweight: 100, beginner: 61, novice: 86, intermediate: 116, advanced: 151, elite: 188 },
+        { bodyweight: 105, beginner: 64, novice: 89, intermediate: 119, advanced: 154, elite: 192 },
+        { bodyweight: 110, beginner: 66, novice: 91, intermediate: 122, advanced: 158, elite: 196 },
+        { bodyweight: 115, beginner: 68, novice: 94, intermediate: 125, advanced: 161, elite: 200 },
+        { bodyweight: 120, beginner: 70, novice: 96, intermediate: 128, advanced: 164, elite: 203 },
+      ],
+      byAge: [
+        { age: 15, beginner: 35, novice: 54, intermediate: 77, advanced: 105, elite: 136 },
+        { age: 20, beginner: 40, novice: 61, intermediate: 89, advanced: 120, elite: 155 },
+        { age: 25, beginner: 41, novice: 63, intermediate: 91, advanced: 124, elite: 160 },
+        { age: 30, beginner: 41, novice: 63, intermediate: 91, advanced: 124, elite: 160 },
+        { age: 35, beginner: 41, novice: 63, intermediate: 91, advanced: 124, elite: 160 },
+        { age: 40, beginner: 41, novice: 63, intermediate: 91, advanced: 124, elite: 160 },
+        { age: 45, beginner: 39, novice: 60, intermediate: 86, advanced: 117, elite: 151 },
+        { age: 50, beginner: 37, novice: 56, intermediate: 80, advanced: 109, elite: 141 },
+        { age: 55, beginner: 34, novice: 52, intermediate: 74, advanced: 101, elite: 130 },
+        { age: 60, beginner: 31, novice: 47, intermediate: 68, advanced: 92, elite: 119 },
+        { age: 65, beginner: 28, novice: 43, intermediate: 61, advanced: 83, elite: 108 },
+        { age: 70, beginner: 25, novice: 38, intermediate: 55, advanced: 75, elite: 97 },
+        { age: 75, beginner: 23, novice: 34, intermediate: 50, advanced: 67, elite: 87 },
+        { age: 80, beginner: 20, novice: 31, intermediate: 44, advanced: 60, elite: 78 },
+        { age: 85, beginner: 18, novice: 28, intermediate: 40, advanced: 54, elite: 70 },
+        { age: 90, beginner: 16, novice: 25, intermediate: 36, advanced: 48, elite: 63 },
+      ],
+    },
+    powerlifting_total: {
+      average: 268,
+      byBodyweight: [
+        { bodyweight: 40, beginner: 86, novice: 121, intermediate: 165, advanced: 215, elite: 270 },
+        { bodyweight: 45, beginner: 96, novice: 134, intermediate: 179, advanced: 232, elite: 288 },
+        { bodyweight: 50, beginner: 106, novice: 145, intermediate: 193, advanced: 247, elite: 305 },
+        { bodyweight: 55, beginner: 115, novice: 156, intermediate: 205, advanced: 261, elite: 321 },
+        { bodyweight: 60, beginner: 124, novice: 166, intermediate: 217, advanced: 274, elite: 335 },
+        { bodyweight: 65, beginner: 133, novice: 176, intermediate: 228, advanced: 287, elite: 349 },
+        { bodyweight: 70, beginner: 141, novice: 185, intermediate: 239, advanced: 299, elite: 362 },
+        { bodyweight: 75, beginner: 149, novice: 194, intermediate: 249, advanced: 310, elite: 374 },
+        { bodyweight: 80, beginner: 156, novice: 203, intermediate: 258, advanced: 320, elite: 386 },
+        { bodyweight: 85, beginner: 163, novice: 211, intermediate: 267, advanced: 331, elite: 397 },
+        { bodyweight: 90, beginner: 170, novice: 219, intermediate: 276, advanced: 340, elite: 408 },
+        { bodyweight: 95, beginner: 177, novice: 226, intermediate: 285, advanced: 350, elite: 418 },
+        { bodyweight: 100, beginner: 183, novice: 233, intermediate: 293, advanced: 359, elite: 428 },
+        { bodyweight: 105, beginner: 189, novice: 240, intermediate: 301, advanced: 367, elite: 437 },
+        { bodyweight: 110, beginner: 195, novice: 247, intermediate: 308, advanced: 376, elite: 447 },
+        { bodyweight: 115, beginner: 201, novice: 254, intermediate: 315, advanced: 384, elite: 455 },
+        { bodyweight: 120, beginner: 207, novice: 260, intermediate: 322, advanced: 392, elite: 464 },
+      ],
+    },
+  },
 };
 
-/**
- * 获取最接近的体重档位标准
- * 逻辑：如果用户体重在两个档位之间，取较大的那个档位（保守估计）
- * 例如：用户72kg，取75kg的标准；用户48kg，取50kg的标准
- */
-function findClosestStandard(gender, exercise, bodyWeight) {
-  const genderData = standards[gender];
-  if (!genderData) return null;
-
-  const exerciseData = genderData[exercise];
-  if (!exerciseData) return null;
-
-  // 查找第一个体重大于等于用户体重的标准
-  let found = exerciseData.find((item) => item.bodyweight >= bodyWeight);
-
-  // 如果用户体重超过了表格最大值，返回最后一行（最大值）
-  if (!found) {
-    return exerciseData[exerciseData.length - 1];
-  }
-
-  return found;
-}
-
-/**
- * 评估单项力量等级
- */
-function assessExercise(gender, exercise, bodyWeight, oneRepMax) {
-  const standard = findClosestStandard(gender, exercise, bodyWeight);
-  if (!standard) return null;
-
-  // 判定等级
-  if (oneRepMax >= standard.Elite) return { level: 'elite', standard };
-  if (oneRepMax >= standard.Advanced) return { level: 'advanced', standard };
-  if (oneRepMax >= standard.Intermediate) return { level: 'intermediate', standard };
-  if (oneRepMax >= standard.Novice) return { level: 'novice', standard };
-  return { level: 'beginner', standard };
-}
-
-/**
- * 主函数：综合评估
- */
-function getFitnessAssessment({ gender, bodyWeight, benchPress1RM, squat1RM, deadlift1RM }) {
-  // 1. 单项评估
-  const benchAssessment = assessExercise(gender, 'bench_press', bodyWeight, benchPress1RM);
-  const squatAssessment = assessExercise(gender, 'squat', bodyWeight, squat1RM);
-  const deadliftAssessment = assessExercise(gender, 'deadlift', bodyWeight, deadlift1RM);
-
-  // 2. 等级分值映射 (用于计算综合分)
-  const levelScoreMap = {
-    beginner: 1,
-    novice: 2,
-    intermediate: 3,
-    advanced: 4,
-    elite: 5
-  };
-
-  // 3. 计算综合等级 (取平均值)
-  const totalScore =
-    levelScoreMap[benchAssessment.level] +
-    levelScoreMap[squatAssessment.level] +
-    levelScoreMap[deadliftAssessment.level];
-  const avgScore = totalScore / 3;
-
-  // 简单的综合评级逻辑：
-  // 2.5以下 -> 新手; 2.5-3.5 -> 中级; 3.5以上 -> 高级 (仅作示例，可调整)
-  let overallLevel = 'novice';
-  if (avgScore >= 4.5) overallLevel = 'elite';
-  else if (avgScore >= 3.5) overallLevel = 'advanced';
-  else if (avgScore >= 2.5) overallLevel = 'intermediate';
-  else overallLevel = 'beginner'; // 如果很弱，归为初学者
-
-  return {
-    bench_press: benchAssessment,
-    squat: squatAssessment,
-    deadlift: deadliftAssessment,
-    overallLevel: overallLevel,
-    score: avgScore.toFixed(1)
-  };
-}
-
-module.exports = { getFitnessAssessment };
+module.exports = standards;
