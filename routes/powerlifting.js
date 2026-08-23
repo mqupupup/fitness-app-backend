@@ -77,15 +77,46 @@ router.post('/evaluate', async (req, res) => {
   try {
     const { gender, bodyWeight, squat, bench, deadlift, coefficientType } = req.body;
 
-    // 输入验证
-    if (!['male', 'female'].includes(gender)) {
+    // 性别校验
+    if (!gender || !['male', 'female'].includes(gender)) {
       console.log('❌ [VALIDATION_ERROR] 性别参数无效:', gender);
-      return res.status(400).json({ success: false, error: 'Invalid gender' });
+      return res.status(400).json({ success: false, message: '性别参数无效，应为 male 或 female' });
     }
-    
-    if (bodyWeight <= 0 || squat <= 0 || bench <= 0 || deadlift <= 0) {
-      console.log('❌ [VALIDATION_ERROR] 重量参数必须为正数:', { bodyWeight, squat, bench, deadlift });
-      return res.status(400).json({ success: false, error: 'All weights must be positive' });
+
+    // 体重校验
+    if (bodyWeight == null) {
+      return res.status(400).json({ success: false, message: '体重为必填项' });
+    }
+    if (typeof bodyWeight !== 'number' || isNaN(bodyWeight)) {
+      return res.status(400).json({ success: false, message: '体重必须为有效数字' });
+    }
+    if (bodyWeight < 10 || bodyWeight > 300) {
+      return res.status(400).json({ success: false, message: '体重应在 10-300kg 范围内' });
+    }
+
+    // 三项成绩校验（力量举评估要求三项都必须输入）
+    const lifts = [
+      { key: 'squat', label: '深蹲', value: squat },
+      { key: 'bench', label: '卧推', value: bench },
+      { key: 'deadlift', label: '硬拉', value: deadlift },
+    ];
+
+    for (const lift of lifts) {
+      if (lift.value == null) {
+        return res.status(400).json({ success: false, message: `${lift.label}为必填项` });
+      }
+      if (typeof lift.value !== 'number' || isNaN(lift.value)) {
+        return res.status(400).json({ success: false, message: `${lift.label}必须为有效数字` });
+      }
+      if (lift.value <= 0 || lift.value > 1000) {
+        return res.status(400).json({ success: false, message: `${lift.label}应在 0-1000kg 范围内且大于0` });
+      }
+    }
+
+    // 系数类型校验
+    if (!coefficientType || !['ipf_gl', 'dots', 'wilks'].includes(coefficientType)) {
+      console.log('❌ [VALIDATION_ERROR] 系数类型无效:', coefficientType);
+      return res.status(400).json({ success: false, message: '系数类型无效，应为 ipf_gl、dots 或 wilks' });
     }
 
     // 计算总重量
@@ -145,7 +176,7 @@ router.post('/evaluate', async (req, res) => {
     console.error('💥 [POWERLIFTING_EVALUATE] API 调用失败');
     console.error('⏱️ 处理耗时:', processingTime, 'ms');
     console.error('❌ 错误详情:', error);
-    res.status(500).json({ success: false, error: 'Internal server error' });
+    res.status(500).json({ success: false, message: '服务器内部错误' });
   }
 });
 
