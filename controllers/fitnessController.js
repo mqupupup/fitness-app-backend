@@ -128,19 +128,53 @@ const standardByExerciseHandler = (req, res) => {
 const assessHandler = (req, res) => {
   const { gender, bodyWeight, age, squat, benchPress, deadlift } = req.body;
 
-  if (!gender || !bodyWeight) {
+  // 必填校验
+  if (!gender || bodyWeight == null) {
     return res.status(400).json({ success: false, message: '性别和体重为必填项' });
   }
+
+  // 性别校验
   if (!standards[gender]) {
     return res.status(400).json({ success: false, message: '性别参数无效，应为 male 或 female' });
   }
 
-  const assessments = [];
+  // 体重类型和范围校验
+  if (typeof bodyWeight !== 'number' || isNaN(bodyWeight)) {
+    return res.status(400).json({ success: false, message: '体重必须为有效数字' });
+  }
+  if (bodyWeight < 10 || bodyWeight > 300) {
+    return res.status(400).json({ success: false, message: '体重应在 10-300kg 范围内' });
+  }
+
+  // 年龄校验（选填，输入了才校验）
+  if (age != null && age !== '') {
+    if (typeof age !== 'number' || isNaN(age)) {
+      return res.status(400).json({ success: false, message: '年龄必须为有效数字' });
+    }
+    if (age < 10 || age > 100) {
+      return res.status(400).json({ success: false, message: '年龄应在 10-100 岁范围内' });
+    }
+  }
+
+  // 各项成绩校验（选填，输入了才校验）
   const exercises = [
     { key: 'squat', label: '深蹲', value: squat },
     { key: 'bench_press', label: '卧推', value: benchPress },
     { key: 'deadlift', label: '硬拉', value: deadlift },
   ];
+
+  for (const ex of exercises) {
+    if (ex.value != null && ex.value !== '') {
+      if (typeof ex.value !== 'number' || isNaN(ex.value)) {
+        return res.status(400).json({ success: false, message: `${ex.label}必须为有效数字` });
+      }
+      if (ex.value < 0 || ex.value > 1000) {
+        return res.status(400).json({ success: false, message: `${ex.label}应在 0-1000kg 范围内` });
+      }
+    }
+  }
+
+  const assessments = [];
 
   let totalLevelIndex = 0;
   let assessedCount = 0;
