@@ -1,6 +1,9 @@
 // routes/powerlifting.js
 const express = require('express');
 const router = express.Router();
+const CompetitionMeet = require('../models/CompetitionMeet');
+const CompetitionResult = require('../models/CompetitionResult');
+const { buildCompetitionDistribution, getClassification } = require('../utils/percentile');
 
 // IPF GL 分数计算（官方公式，2020年起IPF官方评分系统）
 // 公式：IPF GL Points = Total × (100 / (A - B × e^(-C × BW)))
@@ -290,6 +293,286 @@ router.post('/evaluate', async (req, res) => {
   } catch (error) {
     const processingTime = Date.now() - startTime;
     console.error('💥 [POWERLIFTING_EVALUATE] API 调用失败');
+    console.error('⏱️ 处理耗时:', processingTime, 'ms');
+    console.error('❌ 错误详情:', error);
+    res.status(500).json({ success: false, message: '服务器内部错误' });
+  }
+});
+
+// ==================== 力量举参赛评估 ====================
+
+// IPF 体重级别映射
+const MEN_WEIGHT_CLASSES = [59, 66, 74, 83, 93, 105, 120];
+const WOMEN_WEIGHT_CLASSES = [47, 52, 57, 63, 69, 76, 84];
+
+/**
+ * 根据体重获取体重级别
+ */
+function getWeightClass(bodyweight, gender) {
+  const classes = gender === 'male' ? MEN_WEIGHT_CLASSES : WOMEN_WEIGHT_CLASSES;
+  for (const cls of classes) {
+    if (bodyweight <= cls) {
+      return cls.toString();
+    }
+  }
+  // 超过最大级别，返回最大级别+
+  return `${classes[classes.length - 1]}+`;
+}
+
+/**
+ * 根据年龄获取年龄组
+ */
+function getAgeGroup(age) {
+  if (!age || age < 14) return 'Open';
+  if (age < 19) return 'Sub-Juniors';
+  if (age < 24) return 'Juniors';
+  if (age < 40) return 'Open';
+  if (age < 50) return 'Masters 1';
+  if (age < 60) return 'Masters 2';
+  if (age < 70) return 'Masters 3';
+  return 'Masters 4';
+}
+
+/**
+ * 获取相邻体重级别
+ */
+function getAdjacentWeightClasses(weightClass, gender) {
+  const classes = gender === 'male' ? MEN_WEIGHT_CLASSES : WOMEN_WEIGHT_CLASSES;
+  const classesStr = classes.map(c => c.toString());
+  classesStr.push(`${classes[classes.length - 1]}+`);
+
+  const index = classesStr.indexOf(weightClass);
+  if (index === -1) return [weightClass];
+
+  const result = [weightClass];
+  if (index > 0) result.push(classesStr[index - 1]);
+  if (index < classesStr.length - 1) result.push(classesStr[index + 1]);
+  return result;
+}
+
+/**
+ * 查询比赛成绩（带fallback机制）
+ */
+async function queryCompetitionResults({ federation, sex, equipment, weightClass, ageGroup }) {
+  const minSampleSize = 20; // 最小样本量
+
+  // 第一层：精确匹配（性别 + 装备 + 体重级别 + 年龄组）
+  let query = {
+    federation,
+    sex,
+    equipment,
+    weightClass,
+    division: ageGroup,
+    status: 'Valid',
+    total: { $gt: 0 }
+  };
+
+  let results = await CompetitionResult.find(query).select('total -_id');
+  let exactMatch = results.length >= minSampleSize;
+  let fallbackUsed = false;
+  let fallbackLevel = 0;
+
+  // 第二层：去掉年龄组限制
+  if (results.length < minSampleSize) {
+    fallbackUsed = true;
+    fallbackLevel = 1;
+    query = {
+      federation,
+      sex,
+      equipment,
+      weightClass,
+      status: 'Valid',
+      total: { $gt: 0 }
+    };
+    results = await CompetitionResult.find(query).select('total -_id');
+  }
+
+  // 第三层：扩大到相邻体重级别
+  if (results.length < minSampleSize) {
+    fallbackUsed = true;
+    fallbackLevel = 2;
+    const adjacentClasses = getAdjacentWeightClasses(weightClass, sex === 'M' ? 'male' : 'female');
+    query = {
+      federation,
+      sex,
+      equipment,
+      weightClass: { $in: adjacentClasses },
+      status: 'Valid',
+      total: { $gt: 0 }
+    };
+    results = await CompetitionResult.find(query).select('total -_id');
+  }
+
+  const totals = results.map(r => r.total).filter(t => t > 0);
+
+  return {
+    totals,
+    exactMatch,
+    fallbackUsed,
+    fallbackLevel,
+    sampleSize: totals.length
+  };
+}
+
+// 参赛评估接口
+router.post('/competition-readiness', async (req, res) => {
+  const startTime = Date.now();
+  console.log('🚀 [COMPETITION_READINESS] 收到参赛评估请求');
+  console.log('原始请求体:', JSON.stringify(req.body, null, 2));
+
+  try {
+    const {
+      gender,
+      age,
+      bodyweight,
+      equipment = 'Classic',
+      squat,
+      bench,
+      deadlift,
+      federation = 'IPF-China'
+    } = req.body;
+
+    // 参数校验
+    const errors = [];
+    if (!gender || !['male', 'female'].includes(gender)) {
+      errors.push('性别必须为 male 或 female');
+    }
+    if (!bodyweight || bodyweight < 30 || bodyweight > 200) {
+      errors.push('体重应在 30-200kg 范围内');
+    }
+    if (!squat || squat <= 0) errors.push('请输入有效的深蹲成绩');
+    if (!bench || bench <= 0) errors.push('请输入有效的卧推成绩');
+    if (!deadlift || deadlift <= 0) errors.push('请输入有效的硬拉成绩');
+
+    if (errors.length > 0) {
+      console.log('❌ 验证失败:', errors);
+      return res.status(400).json({ success: false, message: errors.join('；') });
+    }
+
+    // 计算总成绩
+    const total = Number(squat) + Number(bench) + Number(deadlift);
+    const sex = gender === 'male' ? 'M' : 'F';
+    const weightClass = getWeightClass(bodyweight, gender);
+    const ageGroup = getAgeGroup(age);
+
+    console.log(`📊 用户成绩: Total=${total}kg, 体重=${bodyweight}kg, 级别=${weightClass}, 年龄组=${ageGroup}`);
+
+    // 查询比赛数据（带fallback）
+    const queryResult = await queryCompetitionResults({
+      federation,
+      sex,
+      equipment,
+      weightClass,
+      ageGroup
+    });
+
+    console.log(`📊 比赛数据: 样本量=${queryResult.sampleSize}, 精确匹配=${queryResult.exactMatch}, fallback=${queryResult.fallbackUsed}`);
+
+    // 如果没有数据，返回提示
+    if (queryResult.sampleSize === 0) {
+      return res.json({
+        success: true,
+        data: {
+          summary: {
+            percentile: 0,
+            sampleSize: 0,
+            classification: 'no_data',
+            classificationLabel: '暂无数据',
+            description: '当前条件下暂无比赛数据，请稍后再试或调整查询条件'
+          },
+          yourResult: { total, squat, bench, deadlift, bodyweight, weightClass, ageGroup },
+          distribution: null,
+          gaps: null,
+          comparison: { federation, sex, equipment, weightClass, ageGroup },
+          dataQuality: {
+            sampleSize: 0,
+            exactMatch: false,
+            fallbackUsed: false,
+            fallbackLevel: 0,
+            period: '2024-2026',
+            note: '当前条件下暂无比赛数据'
+          }
+        }
+      });
+    }
+
+    // 计算分布
+    const distribution = buildCompetitionDistribution(queryResult.totals, total);
+    const classification = getClassification(distribution.percentile);
+
+    // 获取数据时间范围
+    const meets = await CompetitionMeet.find({ federation }).sort({ date: 1 }).select('date -_id');
+    let period = '2024-2026';
+    if (meets.length > 0) {
+      const startYear = new Date(meets[0].date).getFullYear();
+      const endYear = new Date(meets[meets.length - 1].date).getFullYear();
+      period = `${startYear}-${endYear}`;
+    }
+
+    // fallback说明
+    let fallbackNote = '';
+    if (queryResult.fallbackLevel === 1) {
+      fallbackNote = '同年龄组样本不足，已扩大到所有年龄组进行估算';
+    } else if (queryResult.fallbackLevel === 2) {
+      fallbackNote = '同级别样本不足，已扩大到相邻体重级别进行估算';
+    }
+
+    const result = {
+      summary: {
+        percentile: distribution.percentile,
+        sampleSize: distribution.sampleSize,
+        classification: classification.key,
+        classificationLabel: classification.label,
+        description: classification.description
+      },
+      yourResult: {
+        total,
+        squat: Number(squat),
+        bench: Number(bench),
+        deadlift: Number(deadlift),
+        bodyweight,
+        weightClass,
+        ageGroup
+      },
+      distribution: {
+        median: distribution.median,
+        p75: distribution.p25, // 前25% = 75分位（中上游门槛）
+        p90: distribution.p10, // 前10% = 90分位（高水平门槛）
+        p95: distribution.p5   // 前5% = 95分位（精英级门槛）
+      },
+      gaps: {
+        toMedian: distribution.gapToMedian,
+        toP75: distribution.gapToP25,
+        toP90: distribution.gapToP10,
+        toP95: distribution.gapToP5
+      },
+      comparison: {
+        federation,
+        sex,
+        equipment,
+        weightClass,
+        ageGroup
+      },
+      dataQuality: {
+        sampleSize: distribution.sampleSize,
+        exactMatch: queryResult.exactMatch,
+        fallbackUsed: queryResult.fallbackUsed,
+        fallbackLevel: queryResult.fallbackLevel,
+        period,
+        note: fallbackNote || '基于同条件历史比赛数据的统计估算，不代表官方参赛资格或赛事排名'
+      }
+    };
+
+    const processingTime = Date.now() - startTime;
+    console.log('✅ [COMPETITION_READINESS] 评估完成');
+    console.log('⏱️ 处理耗时:', processingTime, 'ms');
+    console.log('📊 百分位:', distribution.percentile, '等级:', classification.label);
+
+    res.json({ success: true, data: result });
+
+  } catch (error) {
+    const processingTime = Date.now() - startTime;
+    console.error('💥 [COMPETITION_READINESS] 评估失败');
     console.error('⏱️ 处理耗时:', processingTime, 'ms');
     console.error('❌ 错误详情:', error);
     res.status(500).json({ success: false, message: '服务器内部错误' });

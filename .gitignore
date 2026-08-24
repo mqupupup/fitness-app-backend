@@ -88,3 +88,8 @@ logs
 
 # Uploads
 /uploads
+
+# 数据文件（大文件，不提交到git，用同步脚本下载）
+data/*.csv
+data/*.zip
+data/openipf-*/
