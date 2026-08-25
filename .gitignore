@@ -89,6 +89,9 @@ logs
 # Uploads
 /uploads
 
+# 动作库图片（大文件，用 import_repdb_full.js 脚本下载）
+/public/exercises/
+
 # 数据文件（大文件，不提交到git，用同步脚本下载）
 data/*.csv
 data/*.zip

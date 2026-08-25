@@ -37,6 +37,10 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 const uploadDir = path.join(__dirname, 'uploads');
 app.use('/uploads', express.static(uploadDir));
 
+// 动作库图片静态服务 (RepDB 素材)
+const exercisesDir = path.join(__dirname, 'public', 'exercises');
+app.use('/exercises', express.static(exercisesDir));
+
 // 确保上传目录存在
 const fs = require('fs');
 if (!fs.existsSync(uploadDir)) {
@@ -48,6 +52,7 @@ try {
   app.use('/api/auth', require('./routes/auth'));
   app.use('/api/fitness', require('./routes/fitness'));
   app.use('/api/powerlifting', require('./routes/powerlifting'));
+  app.use('/api/exercises', require('./routes/exercises'));
 
 } catch (error) {
   console.error('❌ 路由导入失败:', error.message);
