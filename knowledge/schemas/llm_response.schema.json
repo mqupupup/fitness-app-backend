@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "llm_response.schema.json",
+  "title": "LLM 结构化输出（Evidence 约束下）",
+  "description": "LLM 必须输出 JSON。引用由程序控制：模型只能返回 evidence_id（来自 Evidence Builder 提供的 E1/E2/E3 编号），禁止模型自行填写 source 名，杜绝虚构来源。后端再把 evidence_id → Citation Map → 真实来源/页码。",
+  "type": "object",
+  "properties": {
+    "answer": {
+      "type": "string",
+      "description": "中文答案正文"
+    },
+    "claims": {
+      "type": "array",
+      "description": "答案拆分为可验证的事实性陈述，每条关联其支持的 evidence_id",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "单条可验证事实性陈述"
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "支持该陈述的 evidence_id（必须来自 Evidence Builder 提供的编号）"
+          }
+        },
+        "required": ["text", "evidence_ids"]
+      }
+    },
+    "evidence_status": {
+      "type": "string",
+      "enum": ["sufficient", "insufficient"],
+      "description": "sufficient=证据足够可回答；insufficient=知识库证据不足，answer 须明确说明"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    }
+  },
+  "required": ["answer", "claims", "evidence_status"]
+}

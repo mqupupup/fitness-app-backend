@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "llm_qa_case.schema.json",
+  "title": "LLM QA Case（Evaluation v0.1 统一验收 case）",
+  "description": "定义'什么叫正确回答'。Retrieval 层回答'有没有找到证据'；本 schema 定义 Generation 层'LLM 有没有正确使用证据'。第一版用 Golden expected labels + 规则检查 + 人工抽检，不用 LLM judge。",
+  "type": "object",
+  "properties": {
+    "question": { "type": "string" },
+    "expected_behavior": {
+      "type": "string",
+      "enum": ["answer", "insufficient_evidence"],
+      "description": "answer=应给出基于证据的回答；insufficient_evidence=知识库无足够证据，应明确说'证据不足'"
+    },
+    "must_use_evidence": { "type": "boolean" },
+    "gold_sources": {
+      "type": "array",
+      "description": "证据来源（book/paper + page/doi）"
+    },
+    "gold_source_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "required_claims": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "必须被答案支持并引用的陈述（Groundedness 正向）"
+    },
+    "forbidden_claims": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "证据不支持、绝不能出现的陈述（Groundedness 反向 / hallucination）"
+    },
+    "citation_required": { "type": "boolean" },
+    "topic": { "type": "string" },
+    "difficulty": { "type": "string", "enum": ["easy", "medium", "hard"] },
+    "query_type": { "type": "string" }
+  },
+  "required": [
+    "question",
+    "expected_behavior",
+    "must_use_evidence",
+    "required_claims",
+    "forbidden_claims"
+  ]
+}

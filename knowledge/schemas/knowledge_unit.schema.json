@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "knowledge_unit.schema.json",
+  "title": "KnowledgeUnit",
+  "description": "KnowledgeUnit 数据模型：Book → Chapter → Section → KnowledgeUnit。content 保存原文，contextual_content 保存补足上下文后的检索文本，二者分开存储。",
+  "type": "object",
+  "required": [
+    "knowledge_unit_id",
+    "book_id",
+    "section_path",
+    "content",
+    "source_type",
+    "evidence_level"
+  ],
+  "properties": {
+    "knowledge_unit_id": { "type": "string", "description": "如 book_006_starting_strength#0007" },
+    "book_id": { "type": "string" },
+    "chapter_id": { "type": ["string", "null"] },
+    "section_id": { "type": ["string", "null"] },
+    "page_start": { "type": ["integer", "null"] },
+    "page_end": { "type": ["integer", "null"] },
+    "title": { "type": "string" },
+    "section_path": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "如 [\"第8章\", \"卧推\", \"握距\"]"
+    },
+    "content": { "type": "string", "description": "原始知识片段" },
+    "contextual_content": { "type": "string", "description": "补足上下文后的检索文本（含 section_path/标题/必要铺垫）" },
+    "exercise": { "type": "array", "items": { "type": "string" }, "description": "如 [\"bench_press\"]" },
+    "topic": { "type": "array", "items": { "type": "string" }, "description": "如 [\"technique\", \"grip\"]" },
+    "goal": { "type": "array", "items": { "type": "string" }, "description": "如 [\"strength\"]" },
+    "population": { "type": "array", "items": { "type": "string" }, "description": "如 [\"intermediate\"]" },
+    "evidence_level": {
+      "type": "string",
+      "enum": [
+        "clinical_guideline", "position_stand", "umbrella_review", "systematic_review",
+        "meta_analysis", "randomized_controlled_trial", "cohort_study", "narrative_review",
+        "textbook", "expert_book", "practical_article"
+      ]
+    },
+    "source_type": { "type": "string", "enum": ["book", "paper", "guideline", "dataset"] },
+    "embedding": { "type": "array", "items": { "type": "number" } },
+    "search_text": { "type": "string", "description": "BM25 检索用文本（通常 = contextual_content 或归一化文本）" }
+  },
+  "additionalProperties": true
+}

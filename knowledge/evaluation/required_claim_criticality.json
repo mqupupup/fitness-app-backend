@@ -1,0 +1,382 @@
+{
+ "generated": "2026-09-03",
+ "method": "人工分级 criticality + 规则粗匹配 evidence 支持（A 类 22 条）",
+ "stats": {
+  "total": 22,
+  "critical": 15,
+  "important": 7,
+  "evidence_missing": 2
+ },
+ "items": [
+  {
+   "question": "增肌每周每个肌群应该做多少组？",
+   "claim": "接近力竭",
+   "criticality": "critical",
+   "claim_type": "training_principle",
+   "must_answer": true,
+   "evidence_has_key": false,
+   "evidence_sources": [
+    "book_015_nippard_powerbuilding",
+    "book_001_nsca_essentials",
+    "book_013_nippard_bench",
+    "book_007_practical_programming",
+    "ps_001_acsm_rt_2026"
+   ],
+   "note": "训练量建议必须附带力竭度（ACSM 2026 剂量-反应核心），否则建议不可执行",
+   "evidence_note": "RAG evidence 仅弱相关（fatigue），无明确 接近力竭/to failure → 证据弱，planner 也难覆盖",
+   "evidence_support": "present",
+   "root_cause": "retrieval_miss"
+  },
+  {
+   "question": "每周应该练几次力量训练？",
+   "claim": "同一肌群每周2-3次优于1次",
+   "criticality": "critical",
+   "claim_type": "training_frequency",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_001_nsca_essentials",
+    "book_007_practical_programming",
+    "ps_001_acsm_rt_2026"
+   ],
+   "note": "频率问题核心答案之一（肌群频率 vs 全身频率）",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "每周应该练几次力量训练？",
+   "claim": "全身每周2-3次",
+   "criticality": "critical",
+   "claim_type": "training_frequency",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_001_nsca_essentials",
+    "book_007_practical_programming",
+    "ps_001_acsm_rt_2026"
+   ],
+   "note": "频率问题主答案本身",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "力量训练每组都要练到力竭吗？",
+   "claim": "每次彻底力竭增加疲劳与恢复负担",
+   "criticality": "critical",
+   "claim_type": "training_principle",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_001_nsca_essentials",
+    "book_007_practical_programming",
+    "book_015_nippard_powerbuilding",
+    "ps_001_acsm_rt_2026"
+   ],
+   "note": "力竭问题主答案（为何不必每组力竭的机制）",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "运动人群每日蛋白质摄入建议是多少？",
+   "claim": "均匀分到每餐",
+   "criticality": "important",
+   "claim_type": "nutrition_timing",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_016_integrative_sport_nutrition",
+    "book_001_nsca_essentials",
+    "ps_002_issn_protein",
+    "book_005_pyramid_nutrition"
+   ],
+   "note": "蛋白质摄入的重要执行细节（分配时机），非核心数值",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "蛋白质每天 2g/kg 会过量伤肾吗？",
+   "claim": "肾功能异常者需遵医嘱",
+   "criticality": "critical",
+   "claim_type": "safety_boundary",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_016_integrative_sport_nutrition",
+    "book_007_practical_programming",
+    "ps_002_issn_protein",
+    "book_005_pyramid_nutrition"
+   ],
+   "note": "安全边界：特殊人群限制，不答即安全遗漏",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "减脂期蛋白质要多吃吗？",
+   "claim": "有助保留瘦体重与饱腹感",
+   "criticality": "critical",
+   "claim_type": "nutrition_mechanism",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_001_nsca_essentials",
+    "ps_002_issn_protein",
+    "book_005_pyramid_nutrition"
+   ],
+   "note": "减脂期增蛋白的核心理由（答案主体）",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "训练后营养补充怎么做？",
+   "claim": "训练后1-2小时补蛋白质20-40g",
+   "criticality": "critical",
+   "claim_type": "nutrition_timing",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_016_integrative_sport_nutrition",
+    "book_001_nsca_essentials",
+    "book_005_pyramid_nutrition"
+   ],
+   "note": "训练后营养问题主答案（时机+剂量）",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "训练后营养补充怎么做？",
+   "claim": "配合碳水有助恢复",
+   "criticality": "important",
+   "claim_type": "nutrition_detail",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_016_integrative_sport_nutrition",
+    "book_001_nsca_essentials",
+    "book_005_pyramid_nutrition"
+   ],
+   "note": "重要补充（碳水强化恢复），非主答案必须",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "运动营养中能量平衡与增肌的关系？",
+   "claim": "结合足量蛋白质与力量训练",
+   "criticality": "important",
+   "claim_type": "nutrition_mechanism",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_016_integrative_sport_nutrition",
+    "book_001_nsca_essentials",
+    "book_007_practical_programming",
+    "book_011_nsca_sport_nutrition"
+   ],
+   "note": "能量平衡→增肌机制的关键条件，偏解释性",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "杠铃卧推时握距应该怎么选？",
+   "claim": "中等握距使前臂在底部接近垂直",
+   "criticality": "critical",
+   "claim_type": "technique",
+   "must_answer": true,
+   "evidence_has_key": false,
+   "evidence_sources": [
+    "book_013_nippard_bench",
+    "book_007_practical_programming",
+    "book_006_starting_strength"
+   ],
+   "note": "握距问题主答案（具体数字）",
+   "evidence_note": "RAG evidence 仅泛泛提及 grip，无 1.25-1.75 具体数字 → 证据缺失（检索召回问题，非模型漏答）",
+   "evidence_support": "present",
+   "root_cause": "generation_miss",
+   "status_history": {
+    "previous": "中等握距约1.25-1.75倍肩宽",
+    "reason": "gold 错误唯一答案（知识库外数字）→ canonical 改为知识库支持的'前臂垂直'，多口径开放",
+    "acceptable_variants": [
+     "握距约22-24英寸（食指间距）",
+     "约肩宽的相对比例"
+    ],
+    "root_cause": "gold_error"
+   }
+  },
+  {
+   "question": "杠铃卧推时握距应该怎么选？",
+   "claim": "过宽增加肩关节压力",
+   "criticality": "important",
+   "claim_type": "technique_risk",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_013_nippard_bench",
+    "book_007_practical_programming",
+    "book_006_starting_strength"
+   ],
+   "note": "为何不能太宽的风险提示",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "杠铃卧推时握距应该怎么选？",
+   "claim": "过窄减少胸大肌参与",
+   "criticality": "important",
+   "claim_type": "technique_mechanism",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_013_nippard_bench",
+    "book_007_practical_programming",
+    "book_006_starting_strength"
+   ],
+   "note": "为何不能太窄的机制",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "深蹲时膝盖超过脚尖是错误吗？",
+   "claim": "是踝背屈与躯干前倾的自然结果",
+   "criticality": "critical",
+   "claim_type": "technique",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_014_nippard_squat",
+    "book_007_practical_programming",
+    "book_006_starting_strength"
+   ],
+   "note": "膝盖超脚尖问题主答案（自然结果而非错误）",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "硬拉起始姿势有什么要点？",
+   "claim": "杠铃贴近小腿",
+   "criticality": "critical",
+   "claim_type": "technique",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_001_nsca_essentials",
+    "book_007_practical_programming",
+    "book_006_starting_strength"
+   ],
+   "note": "硬拉起始核心要点之一（杠铃轨迹）",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "creatine loading 有必要吗？",
+   "claim": "loading不必须",
+   "criticality": "critical",
+   "claim_type": "supplement_principle",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_001_nsca_essentials",
+    "ps_003_issn_creatine",
+    "book_005_pyramid_nutrition"
+   ],
+   "note": "creatine loading 问题主答案",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "训练前喝咖啡因有帮助吗？",
+   "claim": "咖啡因是公认合法促能剂",
+   "criticality": "critical",
+   "claim_type": "supplement_evidence",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_016_integrative_sport_nutrition",
+    "book_001_nsca_essentials",
+    "book_005_pyramid_nutrition"
+   ],
+   "note": "咖啡因问题核心结论（有效且合法）",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "训练前喝咖啡因有帮助吗？",
+   "claim": "个体差异明显",
+   "criticality": "important",
+   "claim_type": "individual_variation",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_016_integrative_sport_nutrition",
+    "book_001_nsca_essentials",
+    "book_005_pyramid_nutrition"
+   ],
+   "note": "重要限定（响应因人而异）",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "深蹲对膝盖有害吗？",
+   "claim": "正确技术下深蹲不伤害健康膝盖",
+   "criticality": "critical",
+   "claim_type": "technique_safety",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_014_nippard_squat",
+    "book_007_practical_programming",
+    "book_006_starting_strength"
+   ],
+   "note": "深蹲对膝盖问题主答案（不伤害）",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "深蹲对膝盖有害吗？",
+   "claim": "能强化下肢与膝周肌群",
+   "criticality": "important",
+   "claim_type": "technique_benefit",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_014_nippard_squat",
+    "book_007_practical_programming",
+    "book_006_starting_strength"
+   ],
+   "note": "补充益处（深蹲的正面作用）",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  },
+  {
+   "question": "深蹲对膝盖有害吗？",
+   "claim": "疼痛或伤病史需调整幅度与负荷",
+   "criticality": "critical",
+   "claim_type": "safety_boundary",
+   "must_answer": true,
+   "evidence_has_key": false,
+   "evidence_sources": [
+    "book_014_nippard_squat",
+    "book_007_practical_programming",
+    "book_006_starting_strength"
+   ],
+   "note": "安全边界：伤病史限制，必须提示",
+   "evidence_note": "RAG evidence 完全无 pain/injury/伤 相关内容 → 证据缺失（检索召回问题，非模型漏答）",
+   "evidence_support": "weak",
+   "root_cause": "knowledge_gap"
+  },
+  {
+   "question": "有氧运动会掉肌肉吗？",
+   "claim": "适度有氧配合蛋白质与热量不显著掉肌肉",
+   "criticality": "critical",
+   "claim_type": "training_principle",
+   "must_answer": true,
+   "evidence_has_key": true,
+   "evidence_sources": [
+    "book_001_nsca_essentials",
+    "book_007_practical_programming",
+    "book_005_pyramid_nutrition"
+   ],
+   "note": "有氧掉肌肉问题主答案（条件式结论）",
+   "evidence_support": "present",
+   "root_cause": "generation_miss"
+  }
+ ]
+}

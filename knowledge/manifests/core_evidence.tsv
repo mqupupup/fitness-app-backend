@@ -1,0 +1,15 @@
+# 核心证据集（source of truth，首批 13 篇；PMID 均为 PubMed 公开元数据）
+# 列：slug | title | evidence_level | topic | pmid | url | priority
+acsm-rt-2026	2026 ACSM Resistance Training Position Stand: Prescription for Muscle Function, Hypertrophy, Physical Performance (Overview of Reviews)	position_stand	training	41843416	https://pubmed.ncbi.nlm.nih.gov/41843416/	SSS
+umbrella-rx-vars-2023	Umbrella review: prescription variables on muscle mass/strength/function (44 SR)	umbrella_review	training	37385345	https://pubmed.ncbi.nlm.nih.gov/37385345/	SSS
+schoenfeld-volume-doseresponse	Schoenfeld et al.: dose-response between weekly RT volume and muscle mass (meta)	meta_analysis	hypertrophy	27433992	https://pubmed.ncbi.nlm.nih.gov/27433992/	SSS
+schoenfeld-frequency	Schoenfeld et al.: training frequency and muscle hypertrophy	meta_analysis	hypertrophy	27102172	https://pubmed.ncbi.nlm.nih.gov/27102172/	SS
+schoenfeld-low-vs-high-load	Schoenfeld et al.: low-load vs high-load resistance training	meta_analysis	hypertrophy	28834797	https://pubmed.ncbi.nlm.nih.gov/28834797/	SS
+acsm-progression-2009	2009 ACSM Position Stand: Progression Models in Resistance Training for Healthy Adults	position_stand	training	19204579	https://pubmed.ncbi.nlm.nih.gov/19204579/	B
+and-acsm-nutrition-athletic-performance	AND/DC/ACSM: Nutrition and Athletic Performance	position_stand	nutrition	26920240	https://pubmed.ncbi.nlm.nih.gov/26920240/	SS
+issn-protein-and-exercise	ISSN Position Stand: Protein and Exercise	position_stand	nutrition	28642676	https://pubmed.ncbi.nlm.nih.gov/28642676/	SS
+issn-diets-and-body-composition	ISSN Position Stand: Diets and Body Composition	position_stand	nutrition	28630601	https://pubmed.ncbi.nlm.nih.gov/28630601/	SS
+issn-nutrient-timing	ISSN Position Stand: Nutrient Timing	position_stand	nutrition	28919842	https://pubmed.ncbi.nlm.nih.gov/28919842/	SS
+issn-creatine	ISSN Position Stand: Creatine Supplementation and Exercise Performance	position_stand	nutrition	28615996	https://pubmed.ncbi.nlm.nih.gov/28615996/	SS
+issn-caffeine	ISSN Position Stand: Caffeine and Exercise Performance	position_stand	nutrition	33388079	https://pubmed.ncbi.nlm.nih.gov/33388079/	SS
+bjsm-protein-rt-meta	BJSM: protein supplementation + resistance training (49 studies / 1863 subjects, meta)	meta_analysis	nutrition	28698222	https://pubmed.ncbi.nlm.nih.gov/28698222/	SS
