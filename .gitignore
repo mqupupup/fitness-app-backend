@@ -96,3 +96,25 @@ logs
 data/*.csv
 data/*.zip
 data/openipf-*/
+# ---- knowledge pipeline generated / experiment artifacts ----
+# ingestion builds (units) and dense vector index: regenerable, huge
+**/builds/
+**/dense_index/
+# leave-one-out temporary KB roots (regenerable experiment state)
+knowledge_loo_*/
+# runner stderr / temp logs
+*.err
+*_seq*.json
+*.bak*
+# ad-hoc helper scripts (not part of the codebase)
+_tmp_*.py
+
+# per-run evaluation result dumps (aggregate metrics tracked in CHANGELOG; regenerable)
+knowledge/evaluation/ab_*.json
+knowledge/evaluation/ab_*.jsonl
+knowledge/evaluation/citation_*.json
+knowledge/evaluation/evidence_coverage*.json
+knowledge/evaluation/judge_*.json
+knowledge/evaluation/knowledge_quality_report.json
+knowledge/evaluation/retrieval_regression*.json
+knowledge_candidate_v1/evaluation/

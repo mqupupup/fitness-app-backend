@@ -1,0 +1,12 @@
+{"name": "en_five_sets", "claim": "five sets of 10 reps", "evidence": "five sets of 10 reps versus ten sets of 10 reps on the squat", "expect": "supported", "result": {"unsupported_nums": [], "relations": {"5 \u0002sets\u0002": "exact", " 10 \u0002reps\u0002": "exact"}}, "pass": true}
+{"name": "range_sep_1_6_2_2", "claim": "1.6 to 2.2 g/kg", "evidence": "plateaued between 1.6–2.2 g/kg", "expect": "supported", "result": {"unsupported_nums": [], "relations": {}}, "pass": true}
+{"name": "unit_variant_gkg", "claim": "1.4-2.0 g/kg", "evidence": "a minimum of 1.6 to 2.2 g∙kg−1∙day−1", "expect": "overlap_supported", "result": {"unsupported_nums": [], "relations": {}}, "pass": true}
+{"name": "contained_2_0", "claim": "intake of 2.0 g/kg", "evidence": "recommended 1.6–2.2 g/kg", "expect": "supported", "result": {"unsupported_nums": [], "relations": {}}, "pass": true}
+{"name": "reject_30g_vs_3_5g", "claim": "daily intake of 30 g", "evidence": "3-5 g per day", "expect": "unsupported", "result": {"unsupported_nums": [" 30 \u0002g\u0002[g]"], "relations": {" 30 \u0002g\u0002": "unsupported"}}, "pass": true}
+{"name": "zh_sets", "claim": "每周5组", "evidence": "5 sets per week", "expect": "supported", "result": {"unsupported_nums": [], "relations": {"5\u0002sets\u0002": "exact"}}, "pass": true}
+{"name": "zh_mgkg", "claim": "3毫克每千克", "evidence": "3 mg/kg", "expect": "supported", "result": {"unsupported_nums": [], "relations": {}}, "pass": true}
+{"name": "zh_reps_en", "claim": "10次", "evidence": "ten reps", "expect": "supported", "result": {"unsupported_nums": [], "relations": {"10\u0002reps\u0002": "exact"}}, "pass": true}
+{"name": "en_twenty_forty", "claim": "twenty to forty grams", "evidence": "a dose of 20-40 g", "expect": "supported", "result": {"unsupported_nums": [], "relations": {}}, "pass": true}
+{"name": "en_one_point_six", "claim": "one point six g/kg", "evidence": "1.6 g/kg", "expect": "supported", "result": {"unsupported_nums": [], "relations": {}}, "pass": true}
+{"name": "ineq_at_least_2", "claim": "至少2组", "evidence": "at least 2 sets per muscle group", "expect": "supported", "result": {"unsupported_nums": [], "relations": {"2\u0002sets\u0002": "exact"}}, "pass": true}
+{"name": "gkg_vs_g", "claim": "20g蛋白质", "evidence": "20-40 g of protein per meal", "expect": "supported", "result": {"unsupported_nums": [], "relations": {"20\u0002g\u0002": "contained"}}, "pass": true}

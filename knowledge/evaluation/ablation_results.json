@@ -1,0 +1,204 @@
+{
+  "retrieval_profile": "v1_diversity",
+  "experiments": {
+    "Exp0_baseline_m1": {
+      "candidate_multiplier": 1,
+      "source_cap": 0,
+      "use_evidence_prior": false,
+      "metrics": {
+        "recall@5": 0.651,
+        "recall@10": 0.67,
+        "mrr": 0.604,
+        "ndcg@10": 0.57,
+        "unique_sources": 3.113,
+        "max_source_share": 0.628,
+        "entropy": 1.234
+      }
+    },
+    "Exp1_Dx2_m2": {
+      "candidate_multiplier": 2,
+      "source_cap": 0,
+      "use_evidence_prior": false,
+      "metrics": {
+        "recall@5": 0.632,
+        "recall@10": 0.632,
+        "mrr": 0.605,
+        "ndcg@10": 0.561,
+        "unique_sources": 3.057,
+        "max_source_share": 0.64,
+        "entropy": 1.207
+      }
+    },
+    "Exp1_Dx4_m4": {
+      "candidate_multiplier": 4,
+      "source_cap": 0,
+      "use_evidence_prior": false,
+      "metrics": {
+        "recall@5": 0.651,
+        "recall@10": 0.651,
+        "mrr": 0.61,
+        "ndcg@10": 0.569,
+        "unique_sources": 3.057,
+        "max_source_share": 0.638,
+        "entropy": 1.207
+      }
+    },
+    "Exp1_Dx8_m8": {
+      "candidate_multiplier": 8,
+      "source_cap": 0,
+      "use_evidence_prior": false,
+      "metrics": {
+        "recall@5": 0.651,
+        "recall@10": 0.651,
+        "mrr": 0.61,
+        "ndcg@10": 0.569,
+        "unique_sources": 3.038,
+        "max_source_share": 0.642,
+        "entropy": 1.197
+      }
+    },
+    "Exp2_cap1": {
+      "candidate_multiplier": 4,
+      "source_cap": 1,
+      "use_evidence_prior": false,
+      "metrics": {
+        "recall@5": 0.802,
+        "recall@10": 0.943,
+        "mrr": 0.66,
+        "ndcg@10": 0.698,
+        "unique_sources": 6.849,
+        "max_source_share": 0.165,
+        "entropy": 2.702
+      }
+    },
+    "Exp2_cap2": {
+      "candidate_multiplier": 4,
+      "source_cap": 2,
+      "use_evidence_prior": false,
+      "metrics": {
+        "recall@5": 0.802,
+        "recall@10": 0.858,
+        "mrr": 0.653,
+        "ndcg@10": 0.668,
+        "unique_sources": 5.453,
+        "max_source_share": 0.218,
+        "entropy": 2.37
+      }
+    },
+    "Exp2_cap3": {
+      "candidate_multiplier": 4,
+      "source_cap": 3,
+      "use_evidence_prior": false,
+      "metrics": {
+        "recall@5": 0.783,
+        "recall@10": 0.792,
+        "mrr": 0.647,
+        "ndcg@10": 0.641,
+        "unique_sources": 4.415,
+        "max_source_share": 0.305,
+        "entropy": 2.018
+      }
+    },
+    "Exp2_cap4": {
+      "candidate_multiplier": 4,
+      "source_cap": 4,
+      "use_evidence_prior": false,
+      "metrics": {
+        "recall@5": 0.764,
+        "recall@10": 0.764,
+        "mrr": 0.643,
+        "ndcg@10": 0.627,
+        "unique_sources": 3.962,
+        "max_source_share": 0.392,
+        "entropy": 1.796
+      }
+    },
+    "Exp3_cap2_prior": {
+      "candidate_multiplier": 4,
+      "source_cap": 2,
+      "use_evidence_prior": true,
+      "metrics": {
+        "recall@5": 0.896,
+        "recall@10": 0.915,
+        "mrr": 0.602,
+        "ndcg@10": 0.671,
+        "unique_sources": 5.434,
+        "max_source_share": 0.218,
+        "entropy": 2.367
+      }
+    },
+    "Exp3_cap3_prior": {
+      "candidate_multiplier": 4,
+      "source_cap": 3,
+      "use_evidence_prior": true,
+      "metrics": {
+        "recall@5": 0.858,
+        "recall@10": 0.858,
+        "mrr": 0.602,
+        "ndcg@10": 0.645,
+        "unique_sources": 4.453,
+        "max_source_share": 0.305,
+        "entropy": 2.014
+      }
+    }
+  },
+  "min_candidate_pool": {
+    "cap2_m1": {
+      "candidate_multiplier": 1,
+      "source_cap": 2,
+      "use_evidence_prior": false,
+      "metrics": {
+        "recall@5": 0.717,
+        "recall@10": 0.755,
+        "mrr": 0.631,
+        "ndcg@10": 0.614,
+        "unique_sources": 4.132,
+        "max_source_share": 0.326,
+        "entropy": 1.908
+      }
+    },
+    "cap2_m2": {
+      "candidate_multiplier": 2,
+      "source_cap": 2,
+      "use_evidence_prior": false,
+      "metrics": {
+        "recall@5": 0.774,
+        "recall@10": 0.84,
+        "mrr": 0.651,
+        "ndcg@10": 0.658,
+        "unique_sources": 5.208,
+        "max_source_share": 0.241,
+        "entropy": 2.274
+      }
+    },
+    "cap2_m4": {
+      "candidate_multiplier": 4,
+      "source_cap": 2,
+      "use_evidence_prior": false,
+      "metrics": {
+        "recall@5": 0.802,
+        "recall@10": 0.858,
+        "mrr": 0.653,
+        "ndcg@10": 0.668,
+        "unique_sources": 5.453,
+        "max_source_share": 0.218,
+        "entropy": 2.37
+      }
+    },
+    "cap2_m8": {
+      "candidate_multiplier": 8,
+      "source_cap": 2,
+      "use_evidence_prior": false,
+      "metrics": {
+        "recall@5": 0.802,
+        "recall@10": 0.877,
+        "mrr": 0.656,
+        "ndcg@10": 0.675,
+        "unique_sources": 5.679,
+        "max_source_share": 0.205,
+        "entropy": 2.448
+      }
+    }
+  },
+  "notes": "production profile 指标即 min_candidate_pool['cap2_m4']（mult=4,cap=2,prior=False）"
+}

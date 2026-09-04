@@ -1,0 +1,5 @@
+{"query": "增肌每周训练组数", "must_retrieve": ["volume", "weekly_sets"], "topic": "hypertrophy", "difficulty": "medium"}
+{"query": "蛋白质摄入量 g/kg", "must_retrieve": ["protein", "dietary_intake"], "topic": "nutrition", "difficulty": "medium"}
+{"query": "卧推握距肩关节", "must_retrieve": ["bench_press", "grip", "shoulder"], "topic": "technique", "difficulty": "medium"}
+{"query": "肌酸安全性", "must_retrieve": ["creatine", "safety"], "topic": "nutrition", "difficulty": "easy"}
+{"query": "膝盖超过脚尖 深蹲", "must_retrieve": ["squat", "knee"], "topic": "biomechanics", "difficulty": "easy"}

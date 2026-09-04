@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "coverage_plan",
+  "description": "v1.6-B Coverage Planner 输出。生成前的结构化覆盖计划，控制 LLM '必须覆盖哪些要点'。safe_to_generate 由 Evidence Coverage Gate（程序化）决定：Planner 只能规划 Evidence 已支持的 claim，不负责知识发现。",
+  "type": "object",
+  "required": ["query", "coverage_plan", "skipped"],
+  "properties": {
+    "query": { "type": "string", "description": "用户原始问题" },
+    "coverage_plan": {
+      "type": "array",
+      "description": "已通过 Evidence Coverage Gate、必须覆盖的要点（有序：critical 在前）",
+      "items": {
+        "type": "object",
+        "required": ["claim_id", "priority", "category", "must_answer", "evidence_ids", "answer_instruction", "safe_to_generate"],
+        "properties": {
+          "claim_id": { "type": "string", "description": "要点标识，如 rc_001" },
+          "claim": { "type": "string", "description": "required claim 原文" },
+          "priority": { "type": "string", "enum": ["critical", "important"], "description": "由 claim 分级注册表决定" },
+          "category": {
+            "type": "string",
+            "enum": ["core_conclusion", "applicability", "limitation_safety", "numeric", "source_context"],
+            "description": "core_conclusion=核心事实；applicability=适用人群/条件；limitation_safety=限制/安全边界/反例；numeric=数字/范围/剂量；source_context=多来源冲突/口径"
+          },
+          "must_answer": { "type": "boolean" },
+          "evidence_ids": { "type": "array", "items": { "type": "string" }, "description": "支持该要点的 Evidence ID（E1..EN）" },
+          "answer_instruction": { "type": "string", "description": "给生成器的逐项覆盖指令" },
+          "safe_to_generate": { "type": "boolean", "description": "Evidence Coverage Gate 决定；false 的 claim 不会进入 coverage_plan" }
+        }
+      }
+    },
+    "skipped": {
+      "type": "array",
+      "description": "被 Evidence Coverage Gate 拒绝的要点（unsupported）——不得让 LLM 生成，走 retrieval/knowledge track",
+      "items": {
+        "type": "object",
+        "properties": {
+          "claim": { "type": "string" },
+          "reason": { "type": "string", "enum": ["knowledge_gap", "gold_error", "retrieval_miss_or_absent", "evidence_not_in_topk", "semantic_uncertain"] },
+          "safe": { "type": "boolean", "enum": [false] }
+        }
+      }
+    }
+  }
+}

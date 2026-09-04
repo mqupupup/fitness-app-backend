@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "evidence.schema.json",
+  "title": "EvidenceLevelRegistry and EvidenceRecord",
+  "description": "证据分级定义 + 证据记录 schema。rank 越高，RAG 检索越优先召回。",
+  "definitions": {
+    "evidence_level": {
+      "type": "string",
+      "enum": [
+        "clinical_guideline",
+        "position_stand",
+        "umbrella_review",
+        "systematic_review",
+        "meta_analysis",
+        "randomized_controlled_trial",
+        "cohort_study",
+        "narrative_review",
+        "textbook",
+        "expert_book",
+        "practical_article"
+      ]
+    },
+    "evidence_rank_map": {
+      "type": "object",
+      "description": "evidence_level -> rank（rank 越高越优先）",
+      "properties": {
+        "clinical_guideline": { "const": 10 },
+        "position_stand": { "const": 9 },
+        "umbrella_review": { "const": 8 },
+        "systematic_review": { "const": 7 },
+        "meta_analysis": { "const": 6 },
+        "randomized_controlled_trial": { "const": 5 },
+        "cohort_study": { "const": 4 },
+        "narrative_review": { "const": 3 },
+        "textbook": { "const": 2 },
+        "expert_book": { "const": 1 },
+        "practical_article": { "const": 1 }
+      },
+      "additionalProperties": false,
+      "required": [
+        "clinical_guideline", "position_stand", "umbrella_review",
+        "systematic_review", "meta_analysis", "randomized_controlled_trial",
+        "cohort_study", "narrative_review", "textbook", "expert_book",
+        "practical_article"
+      ]
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["SSS", "SS", "S", "A", "B", "C"]
+    }
+  },
+  "record": {
+    "type": "object",
+    "description": "单条证据记录（论文 / 指南 / 书 / 数据集）",
+    "required": ["source_type", "evidence_level", "title"],
+    "properties": {
+      "source_type": { "type": "string", "enum": ["research", "guideline", "book", "dataset"] },
+      "evidence_level": { "$ref": "#/definitions/evidence_level" },
+      "title": { "type": "string" },
+      "authors": { "type": "array", "items": { "type": "string" } },
+      "year": { "type": "integer" },
+      "journal": { "type": "string" },
+      "topic": { "type": "array", "items": { "type": "string" } },
+      "doi": { "type": "string" },
+      "pubmed_id": { "type": "string" },
+      "pmc_id": { "type": "string" },
+      "url": { "type": "string", "format": "uri" },
+      "full_text_url": { "type": "string", "format": "uri" },
+      "priority": { "$ref": "#/definitions/priority" },
+      "abstract": { "type": "string" }
+    },
+    "additionalProperties": true
+  }
+}
