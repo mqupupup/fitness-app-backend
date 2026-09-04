@@ -99,6 +99,7 @@ data/openipf-*/
 # ---- knowledge pipeline generated / experiment artifacts ----
 # ingestion builds (units) and dense vector index: regenerable, huge
 **/builds/
+**/builds_bak_*/
 **/dense_index/
 # leave-one-out temporary KB roots (regenerable experiment state)
 knowledge_loo_*/
